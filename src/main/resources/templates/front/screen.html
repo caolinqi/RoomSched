@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>会议室状态大屏 - 智能会议室</title>
+
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <style>
+        /* =========================================================
+           大屏专属极客暗黑样式 (完全与 custom.css 物理隔离)
+           ========================================================= */
+        body.rs-screen-page {
+            background: #0b1220 !important; /* 极深幽蓝背景 */
+            color: #f8fafc !important;
+            margin: 0 !important;
+            overflow-x: hidden !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+        }
+
+        .scr-container {
+            padding: 40px 60px;
+            max-width: 1920px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .scr-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .scr-title i { font-size: 36px; color: #60a5fa; }
+
+        .scr-time-block { text-align: right; }
+
+        .scr-clock {
+            font-size: 56px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #f8fafc;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .scr-date { font-size: 16px; color: #94a3b8; font-weight: 500; letter-spacing: 1px;}
+
+        /* 状态图例 */
+        .scr-legend {
+            display: inline-flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding: 16px 24px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .scr-legend-item { display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #cbd5e1; }
+        .scr-legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; box-shadow: 0 0 12px currentColor; }
+        .scr-legend-dot.free { background: #10b981; color: #10b981; }
+        .scr-legend-dot.inuse { background: #ef4444; color: #ef4444; }
+        .scr-legend-dot.maintain { background: #64748b; color: #64748b; }
+
+        /* 会议室网格 */
+        .scr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+            flex: 1;
+        }
+
+        /* 核心卡片设计 (免疫 custom.css) */
+        .scr-room-card {
+            background: #1e293b !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            display: flex;
+            flex-direction: column;
+            min-height: 200px;
+        }
+
+        /* 左侧霓虹发光边带 */
+        .scr-room-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 6px;
+            height: 100%;
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        /* 状态修饰 */
+        .scr-room-card.status-1 { border-color: rgba(16, 185, 129, 0.2) !important; color: #10b981; }
+        .scr-room-card.status-1::before { background: #10b981; }
+        .scr-room-card.status-2 { border-color: rgba(239, 68, 68, 0.2) !important; color: #ef4444; }
+        .scr-room-card.status-2::before { background: #ef4444; }
+        .scr-room-card.status-0 { border-color: rgba(100, 116, 139, 0.2) !important; color: #64748b; opacity: 0.7; }
+        .scr-room-card.status-0::before { background: #64748b; }
+
+        /* 卡片内容 */
+        .scr-room-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .scr-room-name { font-size: 26px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .scr-room-location { font-size: 14px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+
+        .scr-room-capacity {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #cbd5e1;
+            font-family: ui-monospace, monospace;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .scr-room-body {
+            margin-top: auto;
+            background: rgba(11, 18, 32, 0.6);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .scr-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .status-1 .scr-badge { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .status-2 .scr-badge { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-0 .scr-badge { background: rgba(100, 116, 139, 0.1); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.2); }
+
+        .scr-meeting-title {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .scr-meeting-time {
+            font-size: 15px;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes scrFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .scr-room-card { animation: scrFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    </style>
+</head>
+<body class="rs-screen-page"> <div class="scr-container">
+    <div class="scr-header">
+        <div class="scr-title">
+            <i class="layui-icon layui-icon-carousel"></i> 实时状态监控中枢
+        </div>
+        <div class="scr-time-block">
+            <div class="scr-clock" id="clock">00:00:00</div>
+            <div class="scr-date" id="date">YYYY-MM-DD 星期X</div>
+        </div>
+    </div>
+
+    <div class="scr-legend">
+        <div class="scr-legend-item"><div class="scr-legend-dot free"></div> 空闲可用</div>
+        <div class="scr-legend-item"><div class="scr-legend-dot inuse"></div> 会议中</div>
+        <div class="scr-legend-item"><div class="scr-legend-dot maintain"></div> 维修/停用</div>
+    </div>
+
+    <div class="scr-grid" id="roomGrid">
+    </div>
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    // 时钟更新
+    function updateTime() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock').innerText = h + ':' + m + ':' + s;
+
+        var y = now.getFullYear();
+        var mo = String(now.getMonth() + 1).padStart(2, '0');
+        var d = String(now.getDate()).padStart(2, '0');
+        var days = ['日','一','二','三','四','五','六'];
+        var day = '星期' + days[now.getDay()];
+        document.getElementById('date').innerText = y + '-' + mo + '-' + d + '  ' + day;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // 格式化时间辅助函数
+    function formatTime(dateStr) {
+        if (!dateStr) return '';
+        var date = new Date(dateStr);
+        return String(date.getHours()).padStart(2, '0') + ':' +
+            String(date.getMinutes()).padStart(2, '0');
+    }
+
+    // 加载后台数据
+    function loadScreenData() {
+        $.ajax({
+            url: '/api/screen/rooms',
+            type: 'GET',
+            success: function (res) {
+                if (res.code === 200) {
+                    renderRooms(res.data);
+                } else {
+                    console.error('加载失败:', res.message);
+                }
+            },
+            error: function () {
+                console.error('大屏数据请求失败');
+            }
+        });
+    }
+
+    // 渲染大屏卡片 (使用全新的防污染 class)
+    function renderRooms(rooms) {
+        var html = '';
+
+        if (!rooms || rooms.length === 0) {
+            $('#roomGrid').html('<div style="color: #64748b; font-size: 20px; padding: 40px;">数据中枢暂未接入设备...</div>');
+            return;
+        }
+
+        rooms.forEach(function(r, index) {
+            var statusClass = 'status-0';
+            var statusText = '不可用';
+
+            if (r.status === 'FREE') {
+                statusClass = 'status-1';
+                statusText = '空闲';
+            } else if (r.status === 'BUSY') {
+                statusClass = 'status-2';
+                statusText = '使用中';
+            } else if (r.status === 'UPCOMING') {
+                statusClass = 'status-2';
+                statusText = '即将开始';
+            }
+
+            var meetingHtml = '';
+            if (r.currentMeeting) {
+                var timeStr = formatTime(r.currentMeeting.startTime) + ' - ' + formatTime(r.currentMeeting.endTime);
+                meetingHtml = `
+                        <div class="scr-meeting-title">${r.currentMeeting.title}</div>
+                        <div class="scr-meeting-time">
+                            <i class="layui-icon layui-icon-time" style="font-size: 15px;"></i>
+                            ${timeStr}
+                        </div>
+                    `;
+            } else if (r.upcomingMeeting) {
+                var timeStr = formatTime(r.upcomingMeeting.startTime) + ' - ' + formatTime(r.upcomingMeeting.endTime);
+                meetingHtml = `
+                        <div class="scr-meeting-title">即将开始: ${r.upcomingMeeting.title}</div>
+                        <div class="scr-meeting-time">
+                            <i class="layui-icon layui-icon-time" style="font-size: 15px;"></i>
+                            ${timeStr}
+                        </div>
+                    `;
+            } else if (r.status === 'FREE') {
+                meetingHtml = `<div class="scr-meeting-title" style="color: #64748b; font-weight: 400;">中枢静谧，暂无会议指令</div>`;
+            } else {
+                meetingHtml = `<div class="scr-meeting-title" style="color: #64748b; font-weight: 400;">设备离线或维护中</div>`;
+            }
+
+            html += `
+                    <div class="scr-room-card ${statusClass}" style="animation-delay: ${index * 0.08}s">
+                        <div class="scr-room-header">
+                            <div>
+                                <div class="scr-room-name">${r.roomName}</div>
+                                <div class="scr-room-location"><i class="layui-icon layui-icon-location" style="font-size: 13px;"></i> ${r.location || '未配置空间坐标'}</div>
+                            </div>
+                            <div class="scr-room-capacity">${r.capacity || 0} 人</div>
+                        </div>
+                        <div class="scr-room-body">
+                            <div class="scr-badge">${statusText}</div>
+                            ${meetingHtml}
+                        </div>
+                    </div>
+                `;
+        });
+        $('#roomGrid').html(html);
+    }
+
+    loadScreenData();
+    setInterval(loadScreenData, 30000);
+</script>
+</body>
+</html>

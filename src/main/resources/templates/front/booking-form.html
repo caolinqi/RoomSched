@@ -1,0 +1,324 @@
+<style>
+    /* ==================== 极简莫兰迪 Design System ==================== */
+    .booking-layout {
+        display: flex;
+        gap: 32px;
+        align-items: flex-start;
+    }
+
+    .booking-main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .booking-sidebar {
+        width: 320px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* 纯白微投影化卡片 */
+    .booking-form-card,
+    .room-sidebar-card,
+    .tips-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .booking-form-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+
+    .booking-form-subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 32px;
+    }
+
+    /* 按钮组 */
+    .submit-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+        justify-content: flex-end;
+    }
+
+    /* 侧边栏 */
+    .room-sidebar-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+    }
+
+    .room-sidebar-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .room-sidebar-meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .room-sidebar-meta-item i {
+        font-size: 16px;
+        color: #94a3b8;
+        margin-top: 2px;
+    }
+
+    .room-sidebar-meta-item .val {
+        color: #0f172a;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 600;
+    }
+
+    .tips-card h4 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 16px;
+    }
+
+    .tips-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tips-list li {
+        font-size: 13px;
+        color: #64748b;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.6;
+    }
+
+    .tips-list li::before {
+        content: '•';
+        color: #cbd5e1;
+        font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+        .booking-layout {
+            flex-direction: column;
+        }
+
+        .booking-sidebar {
+            width: 100%;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+
+    /* ==================== 发起预约专属暗黑模式覆盖 ==================== */
+    html[data-theme="dark"] .booking-form-card,
+    html[data-theme="dark"] .room-sidebar-card,
+    html[data-theme="dark"] .tips-card { background: var(--card); }
+    
+    html[data-theme="dark"] .booking-form-title,
+    html[data-theme="dark"] .room-sidebar-name,
+    html[data-theme="dark"] .tips-card h4,
+    html[data-theme="dark"] .room-sidebar-meta-item .val { color: var(--text-1); }
+    
+    html[data-theme="dark"] .booking-form-subtitle,
+    html[data-theme="dark"] .room-sidebar-meta-item,
+    html[data-theme="dark"] .tips-list li { color: var(--text-3); }
+    
+    html[data-theme="dark"] .room-sidebar-meta-item i,
+    html[data-theme="dark"] .tips-list li::before { color: var(--text-2); }
+</style>
+
+<div class="booking-layout">
+    <!-- 主表单 -->
+    <div class="booking-main">
+        <div class="booking-form-card">
+            <div class="booking-form-title">发起预约申请</div>
+            <div class="booking-form-subtitle">填写以下信息，提交后等待管理员审批</div>
+
+            <div th:if="${error}" class="alert alert-error">
+                <i class="layui-icon layui-icon-close-fill"></i>
+                <span th:text="${error}">错误信息</span>
+            </div>
+
+            <form th:action="@{/booking}" method="post" id="bookingForm" class="layui-form">
+                <input type="hidden" name="roomId" th:value="${roomVO.id}" id="roomId">
+
+                <div class="form-group">
+                    <label class="form-label">会议主题 <span class="req">*</span></label>
+                    <input type="text" name="meetingTitle" id="meetingTitle" class="form-input"
+                        placeholder="请输入会议主题（最多100字）" maxlength="100" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">开始时间 <span class="req">*</span></label>
+                        <input type="text" name="startTime" id="startTime" class="form-input" placeholder="请选择开始时间"
+                            autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">结束时间 <span class="req">*</span></label>
+                        <input type="text" name="endTime" id="endTime" class="form-input" placeholder="请选择结束时间"
+                            autocomplete="off" required>
+                    </div>
+                </div>
+                <div id="conflictTip" class="conflict-tip" style="display: none;"><i class="layui-icon layui-icon-tips"></i> 该时间段已有预约，请重新选择
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">参会人数 <span class="req">*</span></label>
+                    <input type="number" name="attendeeCount" id="attendeeCount" class="form-input"
+                        placeholder="请输入参会人数" min="1" required>
+                    <div class="form-hint">该会议室最大容量：<strong th:text="${roomVO.capacity} + ' 人'">0 人</strong></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">备注（选填）</label>
+                    <textarea name="remark" id="remark" class="form-input" placeholder="会议目的、注意事项等..."
+                        maxlength="500"></textarea>
+                </div>
+
+                <div class="submit-row">
+                    <a th:href="@{/room/{id}(id=${roomVO.id})}" class="ghost-btn">取消</a>
+                    <button type="submit" class="primary-btn" lay-submit>提交预约申请</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="booking-sidebar">
+        <div class="room-sidebar-card">
+            <div class="room-sidebar-name" th:text="${roomVO.roomName}">会议室名称</div>
+            <div class="room-sidebar-meta">
+                <div class="room-sidebar-meta-item">
+                    <i class="layui-icon layui-icon-location"></i>
+                    <div>
+                        <div style="margin-bottom: 4px;">位置</div>
+                        <span class="val" th:text="${roomVO.location}">--</span>
+                    </div>
+                </div>
+                <div class="room-sidebar-meta-item">
+                    <i class="layui-icon layui-icon-group"></i>
+                    <div>
+                        <div style="margin-bottom: 4px;">容量</div>
+                        <span class="val" th:text="${roomVO.capacity} + ' 人'">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tips-card">
+            <h4>预约须知</h4>
+            <ul class="tips-list">
+                <li>预约提交后需等待管理员审批</li>
+                <li>请在会议开始前后 15 分钟内签到，否则自动释放</li>
+                <li>审批通过后仍可取消（开始前 30 分钟截止）</li>
+                <li>时间段冲突将无法提交</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var roomId = /*[[${roomVO.id}]]*/ 0;
+    var roomCapacity = /*[[${roomVO.capacity}]]*/ 0;
+
+    // 获取当前时间字符串 yyyy-MM-dd HH:mm:ss
+    function getNowStr() {
+        var d = new Date();
+        var pad = function (n) { return n < 10 ? '0' + n : n; };
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+            + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    }
+
+    // 使用 layui.use 确保 laydate 模块已加载
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        // 开始时间选择器
+        var endTimeInst = laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm',
+            min: getNowStr(),
+            done: function (value) {
+                endTimeInst.config.min = value;
+                document.getElementById('conflictTip').style.display = 'none';
+            }
+        });
+
+        // 结束时间选择器
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm',
+            min: getNowStr(),
+            done: function (value) {
+                if (value) checkConflict();
+            }
+        });
+    });
+
+    // 冲突检测
+    function checkConflict() {
+        var startTime = document.getElementById('startTime').value;
+        var endTime = document.getElementById('endTime').value;
+        var tip = document.getElementById('conflictTip');
+        if (!startTime || !endTime) return;
+
+        $.ajax({
+            url: '/api/booking/check-conflict',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                roomId: roomId,
+                startTime: startTime,
+                endTime: endTime
+            }),
+            success: function (res) {
+                if (res.code === 200 && res.data && res.data.conflict) {
+                    tip.style.display = 'block';
+                } else {
+                    tip.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // 表单提交前验证
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+        var count = parseInt(document.getElementById('attendeeCount').value);
+        if (count > roomCapacity) {
+            e.preventDefault();
+            SystemAlert.error('参会人数超过会议室最大容量 ' + roomCapacity + ' 人');
+            return;
+        }
+        var tip = document.getElementById('conflictTip');
+        if (tip && tip.style.display === 'block') {
+            e.preventDefault();
+            SystemAlert.error('该时间段存在冲突，请重新选择时间');
+            return;
+        }
+    });
+</script>

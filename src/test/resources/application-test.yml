@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:roomsched_test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;NON_KEYWORDS=STATUS
+    username: sa
+    password:
+
+  thymeleaf:
+    cache: false
+
+  # Flyway 测试配置：H2 内存库，不需要 baseline（全新数据库，V1-V3 全量执行）
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+    # H2 的 Flyway 迁移：V2 的 CREATE INDEX IF NOT EXISTS 需要 H2 2.x 支持
+    # 如果遇到兼容问题，可在此处指定测试专用 locations
+    encoding: UTF-8
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
+
+logging:
+  level:
+    org.example.roomsched: warn
+    org.springframework.security: warn
+    org.flywaydb: info

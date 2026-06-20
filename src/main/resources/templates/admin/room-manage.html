@@ -1,0 +1,513 @@
+<div>
+    <style>
+        .table-wrap {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            border: none;
+        }
+
+        /* 现代化表格 */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .modern-table th {
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .modern-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .modern-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        /* Morandi Tags */
+        .tag {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tag-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag-red {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .tag-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        /* 纯文本幽灵按钮 */
+        .ghost-link {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-family: inherit;
+        }
+
+        .ghost-link:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .ghost-link.danger {
+            color: #dc2626;
+        }
+
+        .ghost-link.danger:hover {
+            background: #fef2f2;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #1e293b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+        }
+
+        /* 表单弹窗样式微调 */
+        .modal-form {
+            padding: 24px;
+        }
+
+        .modal-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-form .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .modal-form .form-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .modal-form .form-input:focus {
+            border-color: #6366f1;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal-form select.form-input {
+            cursor: pointer;
+        }
+
+        /* 分页链接样式 */
+        .pagination-link {
+            display: inline-block;
+            padding: 6px 14px;
+            margin: 0 4px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #0f172a;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .pagination-link:hover {
+            background: #f1f5f9;
+        }
+
+        /* ==================== 会议室管理专属暗黑模式覆盖 ==================== */
+        html[data-theme="dark"] .rs-page-title { color: var(--text-1) !important; }
+        html[data-theme="dark"] .table-wrap { background: var(--card); }
+        
+        /* 表格 */
+        html[data-theme="dark"] .modern-table th { background: var(--bg); color: var(--text-3); border-bottom-color: var(--border); }
+        html[data-theme="dark"] .modern-table td { border-bottom-color: var(--border); color: var(--text-1); }
+        html[data-theme="dark"] .modern-table tbody tr:hover { background: var(--bg); }
+        html[data-theme="dark"] .mono { color: var(--text-1); }
+        
+        /* 莫兰迪标签 */
+        html[data-theme="dark"] .tag-green { background: rgba(22, 101, 52, 0.3); color: #4ade80; }
+        html[data-theme="dark"] .tag-red { background: rgba(220, 38, 38, 0.3); color: #f87171; }
+        html[data-theme="dark"] .tag-gray { background: rgba(71, 85, 105, 0.3); color: #94a3b8; }
+        html[data-theme="dark"] .tag-blue { background: rgba(55, 48, 163, 0.3); color: #818cf8; }
+        
+        /* 幽灵按钮 */
+        html[data-theme="dark"] .ghost-link { color: var(--text-3); }
+        html[data-theme="dark"] .ghost-link:hover { background: var(--bg); color: var(--text-1); }
+        
+        /* 弹窗表单适配 (SweetAlert2里的内容) */
+        html[data-theme="dark"] .modal-form .form-label { color: var(--text-2); }
+        html[data-theme="dark"] .modal-form .form-input { 
+            background: var(--bg); 
+            color: var(--text-1); 
+            border-color: var(--border); 
+        }
+        html[data-theme="dark"] .modal-form .form-input:focus {
+            border-color: #818cf8;
+            background: var(--card);
+        }
+    </style>
+
+    <!-- 页头 -->
+    <div class="rs-page-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="rs-page-title" style="font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;">
+            会议室管理</div>
+        <button class="primary-btn" onclick="openAddModal()">
+            <i class="layui-icon layui-icon-add-1"></i> 新增会议室
+        </button>
+    </div>
+
+    <!-- Flash 消息 -->
+    <div th:if="${success}"
+        style="margin-bottom: 24px; padding: 12px 16px; background: #dcfce7; color: #166534; border-radius: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="layui-icon layui-icon-ok-circle"></i>
+        <span th:text="${success}">成功</span>
+    </div>
+    <div th:if="${error}"
+        style="margin-bottom: 24px; padding: 12px 16px; background: #fef2f2; color: #dc2626; border-radius: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="layui-icon layui-icon-close-fill"></i>
+        <span th:text="${error}">错误</span>
+    </div>
+
+    <!-- 表格 -->
+    <div class="table-wrap">
+        <table class="modern-table" th:if="${not #lists.isEmpty(page.records)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>容量</th>
+                    <th>位置</th>
+                    <th>设备设施</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="room : ${roomVOList}">
+                    <td class="mono" th:text="${room.id}">1</td>
+                    <td style="font-weight:600;" th:text="${room.roomName}">名称</td>
+                    <td class="mono" th:text="${room.capacity} + ' 人'">0 人</td>
+                    <td th:text="${room.location}">位置</td>
+                    <td style="max-width:200px;">
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <span th:each="f : ${room.facilityList}" class="tag tag-blue" th:text="${f}"></span>
+                            <span th:if="${room.facilityList == null or room.facilityList.isEmpty()}" style="color:#94a3b8;">无</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="tag tag-green" th:if="${room.status == 1}">可用</span>
+                        <span class="tag tag-red" th:if="${room.status == 0}">维修中</span>
+                        <span class="tag tag-gray" th:if="${room.status == 2}">停用</span>
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;">
+                            <button class="ghost-link" th:data-id="${room.id}"
+                                onclick="editRoom(this.getAttribute('data-id'))">编辑</button>
+                            <button class="ghost-link danger" th:data-id="${room.id}"
+                                onclick="deleteRoom(this.getAttribute('data-id'))">删除</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="empty-booking" th:if="${#lists.isEmpty(page.records)}"
+            style="padding:60px; text-align:center; color:#64748b;">
+            <i class="layui-icon layui-icon-list"
+                style="font-size: 48px; color: #cbd5e1; margin-bottom: 16px; display: block;"></i>
+            暂无会议室数据
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination-wrap" th:if="${page.pages > 1}" style="margin-top: 24px;">
+        <div id="room-pagination"></div>
+    </div>
+
+    <!-- 模态框覆盖层 -->
+    <div id="roomModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; border-radius:16px; padding:32px; width:560px; max-width:90vw; box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+            <h3 id="modalTitle" style="margin:0 0 24px; font-size:18px; font-weight:700; color:#0f172a;"></h3>
+            <div id="modalContent"></div>
+            <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:24px;">
+                <button id="modalCancel" style="padding:10px 24px; border-radius:8px; border:1px solid #e2e8f0; background:white; color:#0f172a; font-size:14px; cursor:pointer;">取消</button>
+                <button id="modalSave" style="padding:10px 24px; border-radius:8px; border:none; background:#0f172a; color:white; font-size:14px; font-weight:600; cursor:pointer;">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 设备设施标签选择器 */
+        .facility-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+        .facility-tag-item {
+            padding:6px 14px; border-radius:20px; border:1.5px solid #e2e8f0;
+            background:#f8fafc; color:#475569; font-size:13px; cursor:pointer;
+            transition:all 0.2s; user-select:none;
+        }
+        .facility-tag-item:hover { border-color:#6366f1; color:#6366f1; }
+        .facility-tag-item.active { background:#eef2ff; border-color:#6366f1; color:#4f46e5; font-weight:600; }
+        .facility-custom-wrap { display:flex; gap:8px; align-items:center; }
+        .facility-custom-input {
+            flex:1; height:36px; padding:0 12px; border:1px dashed #cbd5e1;
+            border-radius:8px; font-size:13px; outline:none; background:#fafbfc;
+        }
+        .facility-custom-input:focus { border-color:#6366f1; background:#fff; }
+        .facility-add-btn {
+            padding:6px 14px; border-radius:8px; border:none;
+            background:#eef2ff; color:#4f46e5; font-size:13px; font-weight:600;
+            cursor:pointer; white-space:nowrap; transition:all 0.2s;
+        }
+        .facility-add-btn:hover { background:#e0e7ff; }
+        .form-row { display:flex; gap:16px; }
+        .form-row .form-group { flex:1; }
+    </style>
+
+    <script th:inline="javascript">
+        var currentPage = /*[[${page.current}]]*/ 1;
+        var totalRecords = /*[[${page.total}]]*/ 0;
+        var totalPages = /*[[${page.pages}]]*/ 1;
+
+        // 预设设备选项
+        var PRESET_FACILITIES = ['投影仪','白板','视频会议','音响','录播设备','空调','电视'];
+
+        // 表单模板
+        var ROOM_FORM_TEMPLATE = '<div class="modal-form">' +
+            '<input type="hidden" id="roomId">' +
+            '<div class="form-group"><label class="form-label">会议室名称 <span style="color:#ef4444;">*</span></label>' +
+            '<input type="text" id="roomName" class="form-input" placeholder="如：大会议室A" maxlength="50"></div>' +
+            '<div class="form-row">' +
+            '<div class="form-group"><label class="form-label">容量（人）<span style="color:#ef4444;">*</span></label>' +
+            '<input type="number" id="roomCapacity" class="form-input" placeholder="容纳人数" min="1" max="500"></div>' +
+            '<div class="form-group"><label class="form-label">状态</label>' +
+            '<select id="roomStatus" class="form-input"><option value="1">可用</option><option value="0">维修中</option><option value="2">停用</option></select></div>' +
+            '</div>' +
+            '<div class="form-group"><label class="form-label">位置 <span style="color:#ef4444;">*</span></label>' +
+            '<input type="text" id="roomLocation" class="form-input" placeholder="如：3楼东侧"></div>' +
+            '<div class="form-group"><label class="form-label">设备设施</label>' +
+            '<div class="facility-tags" id="facilityTags"></div>' +
+            '<div class="facility-custom-wrap">' +
+            '<input type="text" id="facilityCustomInput" class="facility-custom-input" placeholder="输入自定义设备名称，回车添加">' +
+            '<button type="button" class="facility-add-btn" onclick="addCustomFacility()">添加</button>' +
+            '</div></div>' +
+            '</div>';
+
+        // 当前选中的设备列表
+        var selectedFacilities = [];
+
+        // 渲染设备标签
+        function renderFacilityTags() {
+            var container = document.getElementById('facilityTags');
+            if (!container) return;
+            var html = '';
+            PRESET_FACILITIES.forEach(function(f) {
+                var active = selectedFacilities.indexOf(f) !== -1 ? ' active' : '';
+                html += '<span class="facility-tag-item' + active + '" onclick="toggleFacility(\'' + f + '\')">' + f + '</span>';
+            });
+            // 自定义设备（不在预设中的）
+            selectedFacilities.forEach(function(f) {
+                if (PRESET_FACILITIES.indexOf(f) === -1) {
+                    html += '<span class="facility-tag-item active" onclick="toggleFacility(\'' + f + '\')">' + f + ' &times;</span>';
+                }
+            });
+            container.innerHTML = html;
+        }
+
+        // 切换设备选中
+        window.toggleFacility = function(name) {
+            var idx = selectedFacilities.indexOf(name);
+            if (idx !== -1) { selectedFacilities.splice(idx, 1); }
+            else { selectedFacilities.push(name); }
+            renderFacilityTags();
+        };
+
+        // 添加自定义设备
+        window.addCustomFacility = function() {
+            var input = document.getElementById('facilityCustomInput');
+            var name = input.value.trim();
+            if (!name) return;
+            if (selectedFacilities.indexOf(name) === -1) {
+                selectedFacilities.push(name);
+                renderFacilityTags();
+            }
+            input.value = '';
+            input.focus();
+        };
+
+        // 回车添加自定义设备
+        document.addEventListener('keydown', function(e) {
+            if (e.target.id === 'facilityCustomInput' && e.key === 'Enter') {
+                e.preventDefault();
+                addCustomFacility();
+            }
+        });
+
+        // 分页
+        if (totalPages > 1) {
+            var html = '';
+            for (var i = 1; i <= totalPages; i++) {
+                var cls = i === currentPage ? ' style="font-weight:700;color:#6366f1;"' : '';
+                html += '<a href="/admin/rooms?page=' + i + '" class="pagination-link"' + cls + '>' + i + '</a>';
+            }
+            document.getElementById('room-pagination').innerHTML = html;
+        }
+
+        // 新增
+        window.openAddModal = function () {
+            selectedFacilities = [];
+            document.getElementById('modalTitle').textContent = '新增会议室';
+            document.getElementById('modalContent').innerHTML = ROOM_FORM_TEMPLATE;
+            renderFacilityTags();
+            document.getElementById('roomModal').style.display = 'flex';
+        };
+
+        // 编辑
+        window.editRoom = function (id) {
+            $.get('/api/admin/room/' + id, function (res) {
+                if (res.code !== 200) { SystemAlert.error(res.message || '获取失败'); return; }
+                var r = res.data;
+                selectedFacilities = [];
+                if (r.facilities) {
+                    try { selectedFacilities = JSON.parse(r.facilities); } catch(e) {}
+                }
+                document.getElementById('modalTitle').textContent = '编辑会议室';
+                document.getElementById('modalContent').innerHTML = ROOM_FORM_TEMPLATE;
+                renderFacilityTags();
+                document.getElementById('roomId').value = r.id;
+                document.getElementById('roomName').value = r.roomName;
+                document.getElementById('roomCapacity').value = r.capacity;
+                document.getElementById('roomLocation').value = r.location;
+                document.getElementById('roomStatus').value = r.status;
+                document.getElementById('roomModal').style.display = 'flex';
+            });
+        };
+
+        // 模态框按钮事件
+        document.getElementById('modalCancel').addEventListener('click', function () {
+            document.getElementById('roomModal').style.display = 'none';
+        });
+        document.getElementById('modalSave').addEventListener('click', function () {
+            submitRoomForm();
+        });
+        document.getElementById('roomModal').addEventListener('click', function (e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+
+        // 提交
+        function submitRoomForm() {
+            var data = {
+                id: document.getElementById('roomId').value || null,
+                roomName: document.getElementById('roomName').value.trim(),
+                capacity: parseInt(document.getElementById('roomCapacity').value),
+                location: document.getElementById('roomLocation').value.trim(),
+                facilities: JSON.stringify(selectedFacilities),
+                status: parseInt(document.getElementById('roomStatus').value)
+            };
+            if (!data.roomName) { SystemAlert.error('请输入会议室名称'); return; }
+            if (!data.capacity || data.capacity < 1) { SystemAlert.error('请输入有效容量'); return; }
+            if (!data.location) { SystemAlert.error('请输入位置'); return; }
+            $.ajax({
+                url: '/api/admin/room/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.code === 200) {
+                        document.getElementById('roomModal').style.display = 'none';
+                        SystemAlert.success('保存成功', function() { location.reload(); });
+                    } else { SystemAlert.error(res.message || '保存失败'); }
+                }
+            });
+        }
+
+        // 删除
+        window.deleteRoom = function (id) {
+            Swal.fire({
+                title: '删除确认',
+                text: '确定删除该会议室？相关预约可能受影响。',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '确定删除',
+                cancelButtonText: '取消',
+                confirmButtonColor: '#ef4444'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    $.post('/api/admin/room/delete/' + id, function (res) {
+                        if (res.code === 200) {
+                            SystemAlert.success('已删除', function() { location.reload(); });
+                        } else { SystemAlert.error(res.message || '删除失败'); }
+                    });
+                }
+            });
+        };
+    </script>
+</div>

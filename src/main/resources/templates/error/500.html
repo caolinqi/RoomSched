@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 Internal Error - 系统异常</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <style>
+        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .error-container { text-align: center; max-width: 500px; padding: 40px; }
+        .error-code { font-size: 120px; font-weight: 800; color: #fca5a5; line-height: 1; margin-bottom: 20px; }
+        .error-title { font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+        .error-desc { font-size: 15px; color: #64748b; margin-bottom: 32px; line-height: 1.6; }
+        .error-msg { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: 6px; margin-bottom: 32px; word-break: break-all; font-family: monospace; font-size: 13px;}
+        .btn-home { display: inline-flex; align-items: center; gap: 8px; background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s; }
+        .btn-home:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white;}
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">500</div>
+        <div class="error-title">服务器开小差了</div>
+        <div class="error-desc">抱歉，服务器内部出现了一些问题，我们已经记录了故障日志，工程师正在加紧处理。</div>
+        <div class="error-msg" th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+        <a th:href="@{/}" class="btn-home"><i class="layui-icon layui-icon-home"></i> 返回系统首页</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}" />
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}" />
+    <title>RoomSched · 智能会议室预约系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/sweetalert2.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <style>
+        /* ===== 全局 Design System ===== */
+        :root {
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --primary: #0f172a;
+            --accent: #6366f1;
+            --accent-light: #eef2ff;
+            --text-1: #0f172a;
+            --text-2: #334155;
+            --text-3: #64748b;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+            --nav-h: 60px;
+        }
+
+        /* 深色模式变量 */
+        html[data-theme="dark"] {
+            --bg: #0a0f1e;
+            --card: #111827;
+            --primary: #f1f5f9;
+            --text-1: #f1f5f9;
+            --text-2: #cbd5e1;
+            --text-3: #94a3b8;
+            --border: #1e293b;
+            --border-light: #1e293b;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --accent-light: #1e1b4b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-1);
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ===== 导航栏 ===== */
+        .rs-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--nav-h);
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 0 var(--border-light), 0 2px 8px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .rs-nav-inner {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            height: 100%;
+        }
+
+        /* Brand */
+        .rs-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-1);
+            text-decoration: none;
+            letter-spacing: -0.4px;
+            margin-right: 40px;
+            flex-shrink: 0;
+        }
+
+        .rs-brand-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rs-brand-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* 导航菜单 */
+        .rs-nav-menu {
+            display: flex;
+            align-items: stretch;
+            height: 100%;
+            flex: 1;
+            gap: 0;
+        }
+
+        .rs-nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-3);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.15s;
+            white-space: nowrap;
+        }
+
+        .rs-nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px 2px 0 0;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .rs-nav-menu a:hover {
+            color: var(--text-1);
+        }
+
+        .rs-nav-menu a:hover::after {
+            transform: scaleX(0.5);
+        }
+
+        .rs-nav-menu a.active {
+            color: var(--text-1);
+            font-weight: 700;
+        }
+
+        .rs-nav-menu a.active::after {
+            transform: scaleX(1);
+        }
+
+        /* 右侧控件 */
+        .rs-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        /* 深色模式切换按钮 */
+        .rs-theme-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-3);
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+
+        .rs-theme-btn:hover {
+            background: var(--bg);
+            color: var(--text-1);
+            border-color: var(--text-3);
+        }
+
+        .rs-theme-btn svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .icon-sun {
+            display: none;
+        }
+
+        .icon-moon {
+            display: block;
+        }
+
+        html[data-theme="dark"] .icon-sun {
+            display: block;
+        }
+
+        html[data-theme="dark"] .icon-moon {
+            display: none;
+        }
+
+        /* 用户信息区 */
+        .rs-nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 4px;
+        }
+
+        .rs-nav-username {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-2);
+        }
+
+        .rs-nav-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: all 0.15s;
+            background: transparent;
+        }
+
+        .rs-nav-logout:hover {
+            color: #dc2626;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        /* 主内容区 */
+        .rs-main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 32px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .rs-nav-inner {
+                padding: 0 16px;
+            }
+
+            .rs-main {
+                padding: 16px;
+            }
+
+            .rs-nav-menu a {
+                padding: 0 10px;
+                font-size: 13px;
+            }
+        }
+
+        /* ===== 全局通用组件（供所有子页面继承） ===== */
+
+        /* 卡片 */
+        .rs-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        /* 页面标题栏 */
+        .rs-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .rs-page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-1);
+            letter-spacing: -0.3px;
+        }
+
+        /* Morandi 状态标签 */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tag::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+            flex-shrink: 0;
+        }
+
+        .tag-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag-red {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .tag-yellow {
+            background: #fef9c3;
+            color: #92400e;
+        }
+
+        .tag-blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .tag-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .tag-purple {
+            background: #f5f3ff;
+            color: #6d28d9;
+        }
+
+        /* 现代无边框表格 */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .modern-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-3);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: var(--text-2);
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.15s;
+        }
+
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .modern-table tbody tr:hover td {
+            background: var(--bg);
+        }
+
+        .modern-table .mono {
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        /* 幽灵按钮 */
+        .ghost-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-3);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .ghost-btn:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+        }
+
+        .ghost-btn.danger:hover {
+            color: #dc2626;
+            background: #fef2f2;
+            border-color: #fef2f2;
+        }
+
+        /* 主操作按钮 */
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+        }
+
+        .primary-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+            color: #fff;
+        }
+
+        /* 次要按钮 */
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-2);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* 表单输入框 */
+        .form-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            color: var(--text-1);
+            background: var(--card);
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-2);
+            margin-bottom: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        /* 分页包装 */
+        .pagination-wrap {
+            margin-top: 20px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-3);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--border);
+            fill: none;
+            stroke-width: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Flash 提示 */
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+    </style>
+    <!-- 深色模式：读取 localStorage，页面渲染前同步应用，防止闪烁 -->
+    <script>
+        (function () {
+            var theme = localStorage.getItem('rs-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="rs-nav">
+        <div class="rs-nav-inner">
+            <!-- 品牌 Logo -->
+            <a th:href="@{/}" class="rs-nav-brand">
+                <div class="rs-brand-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                </div>
+                RoomSched
+            </a>
+
+            <!-- 导航菜单 -->
+            <div class="rs-nav-menu">
+                <a th:href="@{/}" id="nav-home">首页</a>
+                <a th:href="@{/rooms}" id="nav-rooms">会议室</a>
+                <a th:href="@{/my-booking}" id="nav-mybooking">我的预约</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/profile}" id="nav-profile">个人中心</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}" id="nav-admin">管理后台</a>
+                <a th:href="@{/screen}" id="nav-screen" target="_blank">状态大屏</a>
+            </div>
+
+            <!-- 右侧控件 -->
+            <div class="rs-nav-right">
+                <!-- 深色模式切换 -->
+                <button class="rs-theme-btn" id="theme-toggle" title="切换深色模式">
+                    <!-- 月亮（亮色模式下显示）-->
+                    <svg class="icon-moon" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                    <!-- 太阳（暗色模式下显示）-->
+                    <svg class="icon-sun" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                </button>
+
+                <!-- 用户信息（登录态）-->
+                <span sec:authorize="isAuthenticated()" class="rs-nav-user">
+                    <svg style="width:14px;height:14px;stroke:var(--text-3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"
+                        viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span class="rs-nav-username" sec:authentication="name">用户</span>
+                    <a th:href="@{/logout}" class="rs-nav-logout">
+                        <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        退出
+                    </a>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区（由 LayoutInterceptor 注入 ${content}） -->
+    <main class="rs-main">
+        <div th:replace="${content}">页面内容加载中...</div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // ===== 深色模式切换 =====
+        var toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                var current = document.documentElement.getAttribute('data-theme');
+                var next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('rs-theme', next);
+            });
+        }
+
+        // ===== 导航高亮（根据当前路径自动激活） =====
+        (function () {
+            var path = window.location.pathname;
+            var navLinks = document.querySelectorAll('.rs-nav-menu a');
+            navLinks.forEach(function (link) {
+                var href = link.getAttribute('href') || '';
+                if (path === href || (href !== '/' && path.startsWith(href))) {
+                    link.classList.add('active');
+                } else if (path === '/' && href === '/') {
+                    link.classList.add('active');
+                }
+            });
+        })();
+
+        // ===== CSRF 全局配置（用于 AJAX） =====
+        var csrfToken = $('meta[name="_csrf"]').attr('content');
+        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+        if (csrfToken && csrfHeader) {
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

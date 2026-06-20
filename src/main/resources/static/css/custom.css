@@ -1,0 +1,320 @@
+/* ============================================
+   RoomSched 椤跺ア鏋佺畝 & 宸ヤ笟澶у巶椋?鍏ㄥ眬 CSS
+   ============================================ */
+:root {
+  /* 鏋佽嚧鍏嬪埗鐨勪富鑹茶皟锛堟繁閭冪煶鏉胯摑/榛戯級 */
+  --primary: #0f172a;
+  --primary-hover: #334155;
+  --primary-light: #f1f5f9;
+
+  /* 浣庨ケ鍜屽害鑾�叞杩�姛鑳借壊 */
+  --success: #166534;
+  --success-light: #f0fdf4;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --info: #0369a1;
+  --info-light: #e0f2fe;
+
+  /* 涓�€ц壊涓庤儗鏅?*/
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+
+  /* 纭�牳 UI 绌洪棿鍙傛暟 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.06);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ============================================
+   鍏ㄥ眬鍩鸿皟閲嶇疆
+   ============================================ */
+body:not(.rs-screen-page) {
+  background-color: var(--bg-page) !important;
+  color: var(--text-primary) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  margin: 0;
+  min-height: 100vh;
+}
+a { color: var(--primary); text-decoration: none; }
+
+/* ============================================
+   缁勪欢锛氬�鍣ㄤ笌鍗＄墖 (娑堢伃娓愬彉涓庡帤閲嶉槾褰?
+   ============================================ */
+.rs-container { width: min(1240px, calc(100% - 48px)); margin: 0 auto; padding: 32px 0; }
+
+.rs-card, .rs-admin-card, .rs-ranking, .rs-form-card, .rs-room-info-card,
+.rs-detail-card, .rs-calendar-card, .rs-room-card, .rs-stat-card, .rs-admin-stat,
+.login-card, .register-card, .room-list-header {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-subtle) !important;
+  transition: all 0.2s ease !important;
+}
+/* 鍗＄墖鎮�仠寰�姩鏁?*/
+.rs-card:hover, .rs-admin-card:hover, .rs-room-card:hover, .rs-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 褰诲簳鎽ф瘉鎵€鏈夊�浣欑殑浼�厓绱犲拰娓愬彉浼�� */
+.rs-room-card::before, .rs-hero::after, .rs-navbar-brand::before { display: none !important; }
+
+/* 鍑€鍖?Hero 鍖哄煙 */
+.rs-hero {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  padding: 48px !important;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.rs-hero-title { color: var(--text-primary) !important; font-size: 32px; font-weight: 700; }
+.rs-hero-subtitle { color: var(--text-secondary) !important; }
+
+/* ============================================
+   缁勪欢锛氭寜閽?(绮楅噹涓讳箟杩涘寲)
+   ============================================ */
+.layui-btn, .rs-btn, .login-btn, .register-btn, .btn-submit, .btn-check {
+  height: 40px !important;
+  line-height: 40px !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  border: 1px solid var(--border) !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  transition: all 0.2s ease !important;
+}
+/* 涓绘搷浣滄寜閽�細绾�粦搴曠櫧瀛?*/
+.layui-btn-normal, .rs-btn-primary, .login-btn, .register-btn, .btn-submit {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+.layui-btn-normal:hover, .rs-btn-primary:hover, .login-btn:hover, .register-btn:hover, .btn-submit:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+/* 骞界伒鎸夐挳 Hover 鍙嶈壊 */
+.layui-btn-primary:hover, .btn-check:hover, .rs-btn-default:hover {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+
+/* ============================================
+   缁勪欢锛氭爣绛句笌鐘舵€?(鑾�叞杩�綆淇濆拰搴?& 鏋佺畝鏂硅�)
+   ============================================ */
+.rs-badge, .layui-badge, .rs-room-status, .rs-detail-status, .rs-facility-tag {
+  background: var(--primary-light) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important; /* 鎷掔粷 999px 鍦嗚� */
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  font-weight: 500 !important;
+}
+/* 鐘舵€侀噸鍐?*/
+.available, .rs-badge-approved { background: var(--success-light) !important; color: var(--success) !important; border-color: #bbf7d0 !important; }
+.occupied, .rs-badge-rejected, .danger { background: var(--danger-light) !important; color: var(--danger) !important; border-color: #fecaca !important; }
+.upcoming, .rs-badge-pending, .maintenance { background: var(--warning-light) !important; color: var(--warning) !important; border-color: #fef08a !important; }
+
+/* ============================================
+   鏁版嵁灞曠ず (绛夊�瀛椾綋 & 鏋佺畝琛ㄦ牸)
+   ============================================ */
+.rs-stat-value, .rs-admin-stat-value, .room-capacity, .time, .mono-data {
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.5px;
+}
+/* 鍑€鍖栫粺璁″崱鐗囧浘鏍?(鍘绘笎鍙? */
+.rs-stat-icon, .rs-admin-stat-icon {
+  background: var(--primary-light) !important;
+  color: var(--text-secondary) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* 鐜颁唬琛ㄦ牸 */
+.rs-table, .layui-table { border: none !important; width: 100%; border-collapse: collapse; }
+.rs-table th, .layui-table th { background: var(--bg-page) !important; border-bottom: 2px solid var(--border) !important; padding: 16px !important; font-weight: 600 !important; color: var(--text-secondary) !important; }
+.rs-table td, .layui-table td { border-bottom: 1px solid var(--border) !important; padding: 16px !important; }
+
+/* ============================================
+   琛ㄥ崟涓庤緭鍏ユ�
+   ============================================ */
+.layui-input, .layui-textarea, .rs-form-input input, .rs-room-search input, .rs-filter-bar select {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  height: 44px !important; /* 鍔犲ぇ杈撳叆妗嗛珮搴︽樉璐ㄦ劅 */
+  transition: all 0.2s ease;
+}
+.layui-input:focus, .layui-textarea:focus, .rs-form-input input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 1px var(--primary) !important;
+  outline: none !important;
+}
+
+/* ============================================
+   瀵艰埅涓庝晶杈规爮
+   ============================================ */
+.rs-navbar { background: var(--bg-card) !important; border-bottom: 1px solid var(--border) !important; box-shadow: none !important; height: 64px; }
+.rs-navbar-menu a.active { font-weight: 600; color: var(--text-primary) !important; background: var(--primary-light) !important; }
+.rs-sidebar { border: 1px solid var(--border) !important; background: var(--bg-card) !important; box-shadow: var(--shadow-subtle) !important; border-radius: var(--radius-lg); }
+.rs-sidebar-menu li a.active { background: var(--primary-light) !important; color: var(--primary) !important; border-left: 3px solid var(--primary) !important; font-weight: 600; }
+
+/* ============================================
+   鍝嶅簲寮忚皟鏁?   ============================================ */
+@media (max-width: 980px) {
+  .rs-admin-layout { flex-direction: column; }
+  .rs-sidebar { width: 100%; }
+}
+/* ============================================
+   统一跨界 UI 类名 (取代散落的内联样式)
+   ============================================ */
+.primary-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 44px; padding: 0 24px; font-size: 14px; font-weight: 600;
+    color: #fff !important; background: var(--primary) !important;
+    border: none; border-radius: var(--radius-md); cursor: pointer;
+    transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+.primary-btn:hover { background: var(--primary-hover) !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3); }
+
+.secondary-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 44px; padding: 0 24px; font-size: 14px; font-weight: 600;
+    color: var(--text-primary) !important; background: var(--bg-card) !important;
+    border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer;
+    transition: all 0.2s ease;
+}
+.secondary-btn:hover { border-color: var(--primary); color: var(--primary) !important; background: var(--primary-light) !important; }
+
+.ghost-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 44px; padding: 0 20px; font-size: 14px; font-weight: 500;
+    color: var(--text-secondary) !important; background: transparent;
+    border: 1px solid transparent; border-radius: var(--radius-md); cursor: pointer;
+    transition: all 0.2s ease; text-decoration: none;
+}
+.ghost-btn:hover { color: var(--primary) !important; background: var(--primary-light) !important; }
+
+.danger-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 44px; padding: 0 20px; font-size: 14px; font-weight: 500;
+    color: var(--danger) !important; background: var(--danger-light);
+    border: 1px solid transparent; border-radius: var(--radius-md); cursor: pointer;
+    transition: all 0.2s ease; text-decoration: none;
+}
+.danger-btn:hover { background: #fecaca; }
+
+.form-input {
+    width: 100%; height: 48px; padding: 0 16px; font-size: 14px; color: var(--text-primary);
+    background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-md);
+    outline: none; transition: all 0.2s ease; box-sizing: border-box; font-family: inherit;
+}
+.form-input:focus { border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px var(--primary-light); }
+textarea.form-input { height: auto; padding: 16px; resize: vertical; min-height: 120px; line-height: 1.5; }
+
+
+/* ============================================
+   ?? 暗黑模式全局反转 (Dark Mode Overrides)
+   ============================================ */
+html[data-theme="dark"] {
+  --primary: #f1f5f9;
+  --primary-hover: #e2e8f0;
+  --primary-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+}
+
+/* 强制覆盖 Layui 组件 */
+html[data-theme="dark"] .layui-table,
+html[data-theme="dark"] .layui-table-view,
+html[data-theme="dark"] .layui-table-header,
+html[data-theme="dark"] .layui-table-box,
+html[data-theme="dark"] .layui-table-body,
+html[data-theme="dark"] .layui-input,
+html[data-theme="dark"] .layui-textarea,
+html[data-theme="dark"] .layui-form-select dl,
+html[data-theme="dark"] .layui-form-select dl dd.layui-this,
+html[data-theme="dark"] .layui-card {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+/* Layui 表格内部细节修复 */
+html[data-theme="dark"] .layui-table td, 
+html[data-theme="dark"] .layui-table th {
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+html[data-theme="dark"] .layui-table th {
+    background-color: #334155 !important;
+}
+html[data-theme="dark"] .layui-table tbody tr:hover,
+html[data-theme="dark"] .layui-table-hover {
+    background-color: #334155 !important;
+}
+html[data-theme="dark"] .layui-laypage a, 
+html[data-theme="dark"] .layui-laypage span {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+/* Layui 弹出层暗黑化 */
+html[data-theme="dark"] .layui-layer,
+html[data-theme="dark"] .layui-layer-title {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+html[data-theme="dark"] .layui-layer-content {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 强制覆盖 SweetAlert2 */
+html[data-theme="dark"] .swal2-popup {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+}
+html[data-theme="dark"] .swal2-title, 
+html[data-theme="dark"] .swal2-html-container {
+    color: var(--text-primary) !important;
+}
+html[data-theme="dark"] .swal2-icon.swal2-success [class^=swal2-success-line] {
+    background-color: var(--success) !important;
+}
+html[data-theme="dark"] .swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(22, 101, 52, 0.3) !important;
+}
+
+/* 修复下拉框悬停色 */
+html[data-theme="dark"] .layui-form-select dl dd:hover {
+    background-color: #334155 !important;
+}
+
+/* 修复全局主按钮暗黑模式下白底白字问题 */
+html[data-theme="dark"] .primary-btn {
+    color: #0f172a !important; 
+}

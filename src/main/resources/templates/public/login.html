@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - RoomSched</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .rp-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ===== 左侧品牌区 ===== */
+        .rp-cover {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        /* 双光晕装饰 */
+        .rp-cover::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -150px;
+            left: -150px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .rp-cover::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            bottom: -100px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .rp-brand {
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            z-index: 10;
+            text-decoration: none;
+        }
+
+        .rp-brand-dot {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+        }
+
+        .rp-slogan {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin-bottom: 60px;
+        }
+
+        .rp-slogan h1 {
+            font-size: 46px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            letter-spacing: -1px;
+        }
+
+        .rp-slogan h1 span {
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rp-slogan p {
+            font-size: 16px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* 玻璃磨砂特性卡片 */
+        .rp-features {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 520px;
+        }
+
+        .rp-feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: transform 0.3s;
+        }
+
+        .rp-feature-card:hover {
+            transform: translateX(8px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .rp-feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .rp-feature-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: #818cf8;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .rp-feature-text h3 {
+            margin: 0 0 6px 0;
+            color: #f1f5f9;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .rp-feature-text p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ===== 右侧表单区 ===== */
+        .rp-panel {
+            width: 480px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background: #ffffff;
+            box-shadow: -20px 0 50px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+        }
+
+        .rp-panel-inner {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .rp-form-head {
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .rp-form-head h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .rp-form-head p {
+            font-size: 15px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .rp-alert-error {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .rp-alert-success {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .rp-field {
+            margin-bottom: 20px;
+        }
+
+        .rp-field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .rp-input-wrap {
+            position: relative;
+        }
+
+        .rp-input-adorn {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .rp-input-adorn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .rp-input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px 0 48px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #0f172a;
+            background: #fff;
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .rp-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .rp-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .rp-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .rp-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .rp-checkbox input {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+            accent-color: #6366f1;
+            cursor: pointer;
+        }
+
+        /* 按钮：采用蓝色渐变 + 柔和 box-shadow */
+        .rp-btn-submit {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+
+        .rp-btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .rp-btn-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .rp-login-link {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 32px;
+        }
+
+        .rp-login-link a {
+            color: #6366f1;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .rp-login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .rp-cover {
+                display: none;
+            }
+
+            .rp-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rp-wrapper">
+        <div class="rp-cover">
+            <a href="#" class="rp-brand"><span class="rp-brand-dot"></span>RoomSched</a>
+            <div class="rp-slogan">
+                <h1>企业级<br><span>智能会议室</span>预约系统</h1>
+                <p>化繁为简，高效管理您的每一次会议。体验全新的工作流，让团队协作更加顺畅。</p>
+            </div>
+
+            <div class="rp-features">
+                <div class="rp-feature-card">
+                    <div class="rp-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                    </div>
+                    <div class="rp-feature-text">
+                        <h3>实时状态同步</h3>
+                        <p>会议室状态毫秒级同步，支持大屏实时投影，彻底告别撞会尴尬。</p>
+                    </div>
+                </div>
+                <div class="rp-feature-card">
+                    <div class="rp-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <div class="rp-feature-text">
+                        <h3>多重权限管控</h3>
+                        <p>清晰的审批流设计，区分普通员工与行政管理员，安全可控。</p>
+                    </div>
+                </div>
+                <div class="rp-feature-card">
+                    <div class="rp-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div class="rp-feature-text">
+                        <h3>全自动化释放</h3>
+                        <p>无人签到超时自动释放资源，最大化提升会议室空间利用率。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rp-panel">
+            <div class="rp-panel-inner">
+                <div class="rp-form-head">
+                    <h2>欢迎回来</h2>
+                    <p>请输入您的账号密码登录系统</p>
+                </div>
+
+                <div th:if="${param.error}" class="rp-alert-error">
+                    <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;margin-top:2px;flex-shrink:0;"
+                        viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    <span>用户名或密码错误，请重试。</span>
+                </div>
+                <div th:if="${param.logout}" class="rp-alert-success">
+                    <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;margin-top:2px;flex-shrink:0;"
+                        viewBox="0 0 24 24">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span>您已成功退出登录。</span>
+                </div>
+
+                <form th:action="@{/login}" method="post" onsubmit="handleRemember()">
+                    <div class="rp-field">
+                        <label>用户名</label>
+                        <div class="rp-input-wrap">
+                            <span class="rp-input-adorn"><svg viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg></span>
+                            <input type="text" id="username" name="username" class="rp-input" placeholder="请输入用户名"
+                                required autofocus>
+                        </div>
+                    </div>
+                    <div class="rp-field">
+                        <label>密码</label>
+                        <div class="rp-input-wrap">
+                            <span class="rp-input-adorn"><svg viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg></span>
+                            <input type="password" id="password" name="password" class="rp-input" placeholder="请输入密码"
+                                required>
+                        </div>
+                    </div>
+                    <div class="rp-options">
+                        <label class="rp-checkbox">
+                            <input type="checkbox" id="remember-me" name="remember-me">
+                            <span>记住用户名</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="rp-btn-submit">
+                        立即登录
+                        <svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"
+                            viewBox="0 0 24 24">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </button>
+                </form>
+                <div class="rp-login-link">
+                    还没有账号？ <a th:href="@{/register}">免费注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 深色模式检测
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // 记住密码逻辑：encode/decode/loadRemembered/handleRemember
+        function encode(str) {
+            return btoa(encodeURIComponent(str));
+        }
+
+        function decode(str) {
+            try { return decodeURIComponent(atob(str)); } catch (e) { return ''; }
+        }
+
+        function loadRemembered() {
+            var remembered = localStorage.getItem('loginUserEncoded');
+            if (remembered) {
+                document.getElementById('username').value = decode(remembered);
+                document.getElementById('remember-me').checked = true;
+                document.getElementById('password').focus();
+            }
+        }
+
+        function handleRemember() {
+            var isRemember = document.getElementById('remember-me').checked;
+            var username = document.getElementById('username').value;
+            if (isRemember) {
+                localStorage.setItem('loginUserEncoded', encode(username));
+            } else {
+                localStorage.removeItem('loginUserEncoded');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadRemembered);
+    </script>
+</body>
+
+</html>

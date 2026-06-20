@@ -1,0 +1,243 @@
+<style>
+    /* ==================== 极简莫兰迪 Design System ==================== */
+    .room-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+    }
+    
+    /* 纯白微投影化卡片 */
+    .room-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 32px 24px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        border: none;
+    }
+    .room-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
+    
+    .room-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        gap: 16px;
+    }
+    .room-card-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+    }
+    .room-card-capacity {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: #0f172a;
+        background: #f1f5f9;
+        padding: 6px 10px;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+    
+    .room-card-location {
+        font-size: 13px;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 24px;
+    }
+    .room-card-location i { font-size: 14px; color: #94a3b8; }
+    
+    .room-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 32px;
+        flex: 1;
+    }
+    .facility-tag {
+        padding: 4px 10px;
+        background: #f8fafc;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #475569;
+        font-weight: 500;
+    }
+    
+    .room-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+    }
+    
+    /* Morandi Tags */
+    .tag {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .tag-green { background: #dcfce7; color: #166534; }
+    .tag-red { background: #fef2f2; color: #dc2626; }
+    .tag-gray { background: #f1f5f9; color: #475569; }
+    
+    /* 幽灵操作按钮 */
+    .room-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .ghost-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: transparent;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+    .ghost-btn:hover { background: #f1f5f9; color: #0f172a; }
+    .ghost-btn.primary-ghost { color: #0f172a; font-weight: 600; }
+    
+    /* 页面头部 */
+    .page-hero {
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .page-hero-text h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+    }
+    .page-hero-text p { font-size: 14px; color: #64748b; }
+    .room-count-badge {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: #0f172a;
+        background: #ffffff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        padding: 8px 16px;
+        border-radius: 8px;
+    }
+    
+    /* 空状态 */
+    .empty-rooms {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 20px;
+    }
+    .empty-rooms i { font-size: 40px; color: #cbd5e1; margin-bottom: 16px; }
+    .empty-rooms p { font-size: 14px; color: #64748b; }
+    .empty-rooms p.title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+
+    /* ==================== 会议室列表专属暗黑模式覆盖 ==================== */
+    /* 强制卡片使用暗色底 */
+    html[data-theme="dark"] .room-card { background: var(--card); }
+    /* 强制大标题和卡片名称翻白 */
+    html[data-theme="dark"] .room-card-name,
+    html[data-theme="dark"] .page-hero-text h1,
+    html[data-theme="dark"] .empty-rooms p.title { color: var(--text-1); }
+    /* 强制说明文字变灰 */
+    html[data-theme="dark"] .room-card-location,
+    html[data-theme="dark"] .page-hero-text p,
+    html[data-theme="dark"] .empty-rooms p { color: var(--text-3); }
+    /* 标签颜色渗透 */
+    html[data-theme="dark"] .empty-rooms i,
+    html[data-theme="dark"] .room-card-location i { color: var(--text-3); }
+
+    /* 会议室容量标识和设备标签降噪 */
+    html[data-theme="dark"] .room-card-capacity,
+    html[data-theme="dark"] .facility-tag { 
+        background: var(--bg); 
+        color: var(--text-3); 
+    }
+    /* 卡片底栏边框调暗 */
+    html[data-theme="dark"] .room-card-footer { border-color: var(--border); }
+    /* 顶部徽章反色 */
+    html[data-theme="dark"] .room-count-badge { background: var(--card); color: var(--text-1); }
+
+    /* 同步修复莫兰迪标签 */
+    html[data-theme="dark"] .tag-green { background: rgba(22, 101, 52, 0.3); color: #4ade80; }
+    html[data-theme="dark"] .tag-red { background: rgba(220, 38, 38, 0.3); color: #f87171; }
+    html[data-theme="dark"] .tag-gray { background: rgba(71, 85, 105, 0.3); color: #94a3b8; }
+
+    /* 幽灵按钮悬停适配 */
+    html[data-theme="dark"] .ghost-btn { color: var(--text-3); }
+    html[data-theme="dark"] .ghost-btn.primary-ghost { color: var(--text-1); }
+    html[data-theme="dark"] .ghost-btn:hover { background: var(--bg); color: var(--text-1); }
+</style>
+
+<!-- 页头 -->
+<div class="page-hero">
+    <div class="page-hero-text">
+        <h1>会议室列表</h1>
+        <p>选择适合您团队的会议空间，即刻发起预约</p>
+    </div>
+    <span class="room-count-badge" th:text="'共 ' + ${#lists.size(rooms)} + ' 间可用'">共 0 间可用</span>
+</div>
+
+<!-- 会议室卡片网格 -->
+<div class="room-grid">
+    <div class="room-card" th:each="room : ${rooms}">
+        
+        <div class="room-card-header">
+            <div class="room-card-name" th:text="${room.roomName}">会议室名称</div>
+            <div class="room-card-capacity" th:text="${room.capacity} + ' 人'">10 人</div>
+        </div>
+        
+        <div class="room-card-location">
+            <i class="layui-icon layui-icon-location"></i>
+            <span th:text="${room.location}">位置</span>
+        </div>
+        
+        <div class="room-card-tags">
+            <span class="facility-tag" th:each="f : ${room.facilityList}" th:text="${f}">设备</span>
+            <span th:if="${#lists.isEmpty(room.facilityList)}" class="facility-tag" style="background: transparent; color: #94a3b8;">暂无设备</span>
+        </div>
+        
+        <div class="room-card-footer">
+            <div class="tag tag-green" th:if="${room.status == 1}">可用</div>
+            <div class="tag tag-red"   th:if="${room.status == 0}">维修中</div>
+            <div class="tag tag-gray"  th:if="${room.status == 2}">停用</div>
+            
+            <div class="room-actions">
+                <a th:href="@{/room/{id}(id=${room.id})}" class="ghost-btn">详情</a>
+                <a th:href="@{/booking/new(roomId=${room.id})}" class="ghost-btn primary-ghost">立即预约</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 空状态 -->
+    <div class="empty-rooms" th:if="${#lists.isEmpty(rooms)}">
+        <i class="layui-icon layui-icon-list"></i>
+        <p class="title">一片静谧</p>
+        <p>当前暂无会议室资源，请联系管理员配置</p>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+spring:
+  thymeleaf:
+    cache: false
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    org.example.roomsched: debug
+    org.springframework.security: debug

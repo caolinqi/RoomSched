@@ -1,0 +1,353 @@
+<style>
+    /* ==================== 极简莫兰迪 Design System ==================== */
+    :root {
+        --bg: #f1f5f9;
+        --card: #ffffff;
+        --accent: #0f172a;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --radius: 12px;
+        --shadow: 0 4px 24px rgba(0,0,0,0.04);
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    /* 页面元素动画过渡 */
+    .stat-card, .rs-card, .booking-item, .ghost-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ==================== 顶部 Hero 区域 ==================== */
+    .header-banner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+    }
+    .header-left h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+    .header-left p {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* 幽灵按钮 (Ghost links) */
+    .ghost-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+    .ghost-btn:hover {
+        background: var(--bg);
+        color: var(--accent);
+    }
+    .ghost-btn.primary-ghost {
+        color: var(--accent);
+        font-weight: 600;
+    }
+    .ghost-btn i {
+        font-size: 14px;
+    }
+
+    /* ==================== 统计卡片 (纯白微投影化) ==================== */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+    .stat-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: var(--bg);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    .stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .stat-num {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--accent);
+        font-family: var(--font-mono);
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .stat-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    /* ==================== 今日会议模块 ==================== */
+    .rs-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px 32px;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    .section-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* 列表项 */
+    .booking-list {
+        display: flex;
+        flex-direction: column;
+    }
+    .booking-item {
+        display: flex;
+        align-items: center;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--bg);
+        gap: 24px;
+    }
+    .booking-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .booking-time {
+        font-family: var(--font-mono);
+        font-size: 15px;
+        color: var(--accent);
+        font-weight: 600;
+        min-width: 120px;
+    }
+    .booking-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .booking-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .booking-room {
+        font-size: 13px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ==================== Morandi Tags (莫兰迪状态标签) ==================== */
+    .tag {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    /* 正常/可用/空闲 */
+    .tag-green { background: #dcfce7; color: #166534; }
+    /* 禁用/占用/拒绝 */
+    .tag-red { background: #fef2f2; color: #dc2626; }
+    /* 待审批/警告 */
+    .tag-yellow { background: #fef9c3; color: #854d0e; }
+    /* 其他默认/失效 */
+    .tag-gray { background: #f1f5f9; color: #475569; }
+
+    /* ==================== 沉浸式空状态 ==================== */
+    .empty-today {
+        padding: 80px 0;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .empty-today i {
+        font-size: 40px;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+    .empty-today p {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    /* ==================== 首页专属暗黑模式覆盖 ==================== */
+    html[data-theme="dark"] {
+        --accent: #f1f5f9;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+    }
+    
+    html[data-theme="dark"] .stat-icon { background: rgba(255, 255, 255, 0.05); }
+    
+    html[data-theme="dark"] .tag-green { background: rgba(22, 101, 52, 0.3); color: #4ade80; }
+    html[data-theme="dark"] .tag-red { background: rgba(220, 38, 38, 0.3); color: #f87171; }
+    html[data-theme="dark"] .tag-yellow { background: rgba(133, 77, 14, 0.3); color: #facc15; }
+    html[data-theme="dark"] .tag-gray { background: rgba(71, 85, 105, 0.3); color: #94a3b8; }
+</style>
+
+<!-- Hero 区域 -->
+<div class="header-banner">
+    <div class="header-left">
+        <h1>欢迎回来，开启高效协同</h1>
+        <p>实时状态同步，全自动化释放资源，彻底告别撞会烦恼</p>
+    </div>
+    <div class="header-actions">
+        <!-- 高频操作降级为幽灵按钮 -->
+        <a th:href="@{/rooms}" class="ghost-btn primary-ghost">
+            <i class="layui-icon layui-icon-app"></i>
+            浏览会议室
+        </a>
+        <a th:href="@{/my-booking}" class="ghost-btn">
+            <i class="layui-icon layui-icon-list"></i>
+            我的预约
+        </a>
+    </div>
+</div>
+
+<!-- 纯白微投影化统计卡片 -->
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="layui-icon layui-icon-home"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-num" th:text="${availableRoomCount}">0</div>
+            <div class="stat-label">可用会议室</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="layui-icon layui-icon-list"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-num" th:text="${#lists.size(todayBookings)}">0</div>
+            <div class="stat-label">今日我的预约</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="layui-icon layui-icon-time"></i>
+        </div>
+        <div class="stat-info">
+            <!-- 实时时间，等宽字体 -->
+            <div class="stat-num" id="live-clock">--:--</div>
+            <div class="stat-label">当前时间</div>
+        </div>
+    </div>
+</div>
+
+<!-- 今日预约区 -->
+<div class="rs-card">
+    <div class="section-header">
+        <div class="section-title">今日会议</div>
+        <div class="section-actions">
+            <!-- 纯文本幽灵按钮 -->
+            <a th:href="@{/rooms}" class="ghost-btn primary-ghost">
+                <i class="layui-icon layui-icon-add-1"></i> 发起预约
+            </a>
+            <a th:href="@{/my-booking}" class="ghost-btn">
+                查看全部 <i class="layui-icon layui-icon-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 列表 -->
+    <div class="booking-list" th:if="${not #lists.isEmpty(todayBookings)}">
+        <div class="booking-item" th:each="b : ${todayBookings}">
+            <div class="booking-time">
+                <span th:text="${#temporals.format(b.startTime, 'HH:mm')}">09:00</span>
+                <span>-</span>
+                <span th:text="${#temporals.format(b.endTime, 'HH:mm')}">10:00</span>
+            </div>
+            <div class="booking-info">
+                <div class="booking-title" th:text="${b.meetingTitle}">会议主题</div>
+                <div class="booking-room">
+                    <i class="layui-icon layui-icon-location"></i>
+                    <span th:text="${b.roomName}">会议室名称</span>
+                </div>
+            </div>
+            
+            <!-- Morandi Tags 莫兰迪状态标签 -->
+            <span class="tag tag-yellow" th:if="${b.status == 'PENDING'}">待审批</span>
+            <span class="tag tag-green" th:if="${b.status == 'APPROVED'}">已通过</span>
+            <span class="tag tag-green" th:if="${b.status == 'CHECKED_IN'}">已签到</span>
+            <span class="tag tag-red" th:if="${b.status == 'REJECTED'}">已拒绝</span>
+            <span class="tag tag-gray" th:if="${b.status == 'CANCELLED'}">已取消</span>
+            <span class="tag tag-gray" th:if="${b.status == 'COMPLETED'}">已完成</span>
+            <span class="tag tag-gray" th:if="${b.status == 'AUTO_RELEASED'}">已释放</span>
+        </div>
+    </div>
+
+    <!-- 沉浸式空状态 -->
+    <div class="empty-today" th:if="${#lists.isEmpty(todayBookings)}">
+        <i class="layui-icon layui-icon-date"></i>
+        <p>今日静谧 · 暂无日程安排</p>
+    </div>
+</div>
+
+<script>
+    // 实时时钟
+    function updateClock() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var el = document.getElementById('live-clock');
+        if (el) el.textContent = h + ':' + m;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>

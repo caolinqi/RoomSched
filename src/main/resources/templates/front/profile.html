@@ -1,0 +1,828 @@
+<style>
+    /* ==================== 极简莫兰迪 Design System - 个人中心专属 ==================== */
+    /* 容器重置 */
+    .profile-container {
+        padding: 10px 0;
+    }
+
+    /* 纯白微投影化卡片 */
+    .profile-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    /* 左侧名片区 */
+    .avatar-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* 头像悬停互动 */
+    .text-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+        /* 如果需要更极简，可改为 50% */
+        background: #6b66ff;
+        color: #ffffff;
+        font-size: 36px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        box-shadow: 0 8px 24px rgba(107, 102, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .avatar-mask {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .text-avatar:hover .avatar-mask {
+        opacity: 1;
+    }
+
+    .avatar-mask i {
+        font-size: 28px;
+        color: #ffffff;
+    }
+
+    .user-name-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .user-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .edit-icon {
+        font-size: 16px;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .edit-icon:hover {
+        color: #6b66ff;
+    }
+
+    .user-role {
+        font-size: 14px;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .profile-divider {
+        border-top: 1px solid #e2e8f0;
+        margin: 24px 0;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .info-item i {
+        margin-right: 12px;
+        font-size: 18px;
+        color: #94a3b8;
+    }
+
+    /* 右侧核心交互区 - 选项卡 */
+    .layui-tab-brief>.layui-tab-title {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .layui-tab-brief>.layui-tab-title .layui-this {
+        color: #0f172a !important;
+        font-weight: 700;
+    }
+
+    .layui-tab-brief>.layui-tab-title .layui-this:after {
+        border-bottom-color: #0f172a !important;
+        border-bottom-width: 3px !important;
+        border-radius: 2px 2px 0 0;
+    }
+
+    /* 时间轴美化 */
+    .custom-timeline {
+        margin-top: 24px;
+    }
+
+    .custom-timeline .layui-timeline-item {
+        padding-bottom: 24px;
+    }
+
+    .custom-timeline .layui-timeline-axis {
+        background-color: #e2e8f0;
+        color: #6b66ff;
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+        border-radius: 50%;
+        left: 2px;
+        top: 2px;
+    }
+
+    .custom-timeline .layui-timeline-title {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .timeline-meta {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+
+    .status-approved {
+        color: #10b981;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        color: #f59e0b;
+        font-weight: 600;
+    }
+
+    /* 空状态 */
+    .empty-state {
+        text-align: center;
+        padding: 40px 0;
+        color: #94a3b8;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        display: block;
+        opacity: 0.5;
+    }
+
+    /* 数据概览区 */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin: 24px 0;
+    }
+
+    .stat-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        border: 1px solid #f1f5f9;
+    }
+
+    .stat-title {
+        font-size: 14px;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    /* 强制等宽硬核数字字体 */
+    .monospace-font {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .stat-number {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 42px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+        letter-spacing: -0.05em;
+    }
+
+    .progress-section {
+        margin-top: 32px;
+    }
+
+    .progress-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 16px;
+    }
+
+    .custom-progress {
+        margin-bottom: 20px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    /* ==================== 设置与安全区 (Tab 3) ==================== */
+    .settings-block {
+        margin-bottom: 40px;
+    }
+
+    .settings-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+    }
+
+    .settings-title i {
+        margin-right: 8px;
+        color: #6b66ff;
+        font-weight: normal;
+    }
+
+    /* 表单与交互元素 */
+    .security-form {
+        max-width: 480px;
+    }
+
+    .security-form .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .security-form .form-input {
+        width: 100%;
+        height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #0f172a;
+        font-size: 14px;
+        transition: all 0.2s;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    .security-form .form-input:focus {
+        border-color: #6b66ff;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(107, 102, 255, 0.1);
+        outline: none;
+    }
+
+    .pref-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        max-width: 600px;
+    }
+
+    .pref-label {
+        font-size: 14px;
+        color: #0f172a;
+        font-weight: 500;
+    }
+
+    .pref-desc {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+
+    /* 危险操作区 */
+    .danger-zone {
+        border: 1px dashed #ef4444;
+        border-radius: 8px;
+        padding: 24px;
+        background: #fef2f2;
+        margin-top: 48px;
+    }
+
+    .danger-title {
+        color: #dc2626;
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .danger-title i {
+        margin-right: 6px;
+    }
+
+    .danger-text {
+        color: #7f1d1d;
+        font-size: 13px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    /* 表格覆盖 */
+    .layui-table[lay-skin="line"] {
+        border: none;
+        color: #0f172a;
+    }
+
+    .layui-table[lay-skin="line"] th {
+        background: transparent;
+        font-weight: 600;
+        color: #64748b;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .layui-table[lay-skin="line"] td {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 16px 15px;
+    }
+
+    /* ==================== 原生暗黑模式 (Dark Mode) 适配 ==================== */
+    html[data-theme="dark"] .profile-card {
+        background: var(--card, #18181b);
+        box-shadow: none;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    html[data-theme="dark"] .user-name,
+    html[data-theme="dark"] .layui-tab-brief>.layui-tab-title .layui-this,
+    html[data-theme="dark"] .custom-timeline .layui-timeline-title,
+    html[data-theme="dark"] .stat-number,
+    html[data-theme="dark"] .progress-title,
+    html[data-theme="dark"] .settings-title,
+    html[data-theme="dark"] .pref-label,
+    html[data-theme="dark"] .layui-table[lay-skin="line"],
+    html[data-theme="dark"] .security-form .form-label {
+        color: var(--text-1, #f8fafc) !important;
+    }
+
+    html[data-theme="dark"] .user-role {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-2);
+    }
+
+    html[data-theme="dark"] .info-item,
+    html[data-theme="dark"] .timeline-meta,
+    html[data-theme="dark"] .stat-title,
+    html[data-theme="dark"] .progress-label,
+    html[data-theme="dark"] .layui-table[lay-skin="line"] th {
+        color: var(--text-3, #94a3b8);
+    }
+
+    html[data-theme="dark"] .profile-divider,
+    html[data-theme="dark"] .layui-tab-brief>.layui-tab-title,
+    html[data-theme="dark"] .settings-title,
+    html[data-theme="dark"] .layui-table[lay-skin="line"] th,
+    html[data-theme="dark"] .layui-table[lay-skin="line"] td {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    html[data-theme="dark"] .layui-tab-brief>.layui-tab-title .layui-this:after {
+        border-bottom-color: var(--text-1, #f8fafc) !important;
+    }
+
+    html[data-theme="dark"] .stat-card {
+        background: rgba(255, 255, 255, 0.02);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    html[data-theme="dark"] .custom-timeline .layui-timeline-axis {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    html[data-theme="dark"] .security-form .form-input {
+        background: rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-1);
+    }
+
+    html[data-theme="dark"] .security-form .form-input:focus {
+        border-color: #6b66ff;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    html[data-theme="dark"] .empty-state {
+        color: var(--text-4);
+    }
+
+    /* 危险操作区暗黑适配 */
+    html[data-theme="dark"] .danger-zone {
+        background: rgba(220, 38, 38, 0.05);
+        border-color: #7f1d1d;
+    }
+
+    html[data-theme="dark"] .danger-title,
+    html[data-theme="dark"] .danger-text {
+        color: #ef4444;
+    }
+</style>
+
+<div class="profile-container layui-fluid">
+    <div class="layui-row layui-col-space24">
+        <div class="layui-col-md3">
+            <div class="profile-card avatar-block">
+                <div class="text-avatar" id="uploadAvatar" 
+                     th:style="${userAvatar != null} ? 'background: url(' + @{${userAvatar}} + ') no-repeat center/cover; color: transparent;' : ''">
+                    <span th:if="${userAvatar == null}" th:text="${userInitials ?: 'U'}">U</span>
+                    <div class="avatar-mask">
+                        <i class="layui-icon layui-icon-camera"></i>
+                    </div>
+                </div>
+
+                <div class="user-name-wrapper">
+                    <div class="user-name" th:text="${userName ?: '用户'}">用户</div>
+                    <i class="layui-icon layui-icon-edit edit-icon" title="修改基本信息" id="editInfoBtn"></i>
+                </div>
+                <div class="user-role" th:text="${userRole ?: 'USER'}">USER</div>
+
+                <hr class="profile-divider" style="width: 100%;">
+
+                <ul class="info-list" style="width: 100%;">
+                    <li class="info-item">
+                        <i class="layui-icon layui-icon-email"></i>
+                        <span th:text="${userEmail ?: 'admin@roomsched.com'}">admin@roomsched.com</span>
+                    </li>
+                    <li class="info-item">
+                        <i class="layui-icon layui-icon-cellphone"></i>
+                        <span th:text="${userPhone ?: '138****0000'}">138****0000</span>
+                    </li>
+                    <li class="info-item">
+                        <i class="layui-icon layui-icon-group"></i>
+                        <span th:text="${userDept ?: '平台研发部'}">平台研发部</span>
+                    </li>
+                    <li class="info-item">
+                        <i class="layui-icon layui-icon-time"></i>
+                        <span>加入于 2026-01</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-col-md9">
+            <div class="profile-card" style="min-height: 600px;">
+                <div class="layui-tab layui-tab-brief" lay-filter="profileTab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">我的日程</li>
+                        <li>数据概览</li>
+                        <li>设置与安全</li>
+                    </ul>
+                    <div class="layui-tab-content" style="padding: 24px 0 0 0;">
+                        <div class="layui-tab-item layui-show">
+                            <ul class="layui-timeline custom-timeline" th:if="${not #lists.isEmpty(upcomingBookings)}">
+                                <li class="layui-timeline-item" th:each="booking : ${upcomingBookings}">
+                                    <i class="layui-icon layui-timeline-axis"></i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <div class="layui-timeline-title" th:text="${booking.meetingTitle}">会议主题</div>
+                                        <div class="timeline-meta monospace-font">
+                                            📅 <span
+                                                th:text="${#temporals.format(booking.startTime, 'MM-dd HH:mm')}"></span>
+                                            - <span th:text="${#temporals.format(booking.endTime, 'HH:mm')}"></span>
+                                            | 📍 <span th:text="${booking.roomName}">会议室</span>
+                                        </div>
+                                        <div class="timeline-meta">状态：
+                                            <span
+                                                th:class="${booking.status == 'APPROVED' ? 'status-approved' : 'status-pending'}"
+                                                th:text="${booking.statusText}">状态</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="empty-state" th:if="${#lists.isEmpty(upcomingBookings)}">
+                                <i class="layui-icon layui-icon-date"></i>
+                                <span>近期暂无会议，享受难得的专注时光吧~</span>
+                            </div>
+                        </div>
+
+                        <div class="layui-tab-item">
+                            <div class="stats-container">
+                                <div class="stat-card">
+                                    <div class="stat-title">累计预约 (次)</div>
+                                    <div class="stat-number" th:text="${statTotalBookings}">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">本月时长 (小时)</div>
+                                    <div class="stat-number" th:text="${statMonthHours}">0.0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">违约/取消 (次)</div>
+                                    <div class="stat-number" style="color: #ef4444;" th:text="${statLateCancel}">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">信誉分</div>
+                                    <div class="stat-number" style="color: #10b981;" th:text="${creditScore}">100</div>
+                                </div>
+                            </div>
+
+                            <div class="progress-section" th:if="${not #lists.isEmpty(roomPreferences)}">
+                                <div class="progress-title">常用会议室偏好 TOP 3</div>
+                                <div class="custom-progress" th:each="pref, iterStat : ${roomPreferences}">
+                                    <div class="progress-label">
+                                        <span th:text="${pref.roomName}">会议室</span>
+                                        <span class="monospace-font" th:text="${pref.percentage} + '%'">0%</span>
+                                    </div>
+                                    <div class="layui-progress" lay-showpercent="false">
+                                        <div class="layui-progress-bar" th:attr="lay-percent=${pref.percentage} + '%'"
+                                            th:style="${iterStat.index == 0 ? 'background-color: #6b66ff;' : (iterStat.index == 1 ? 'background-color: #10b981;' : 'background-color: #f59e0b;')}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-tab-item layui-form">
+
+                            <div class="settings-block">
+                                <div class="settings-title"><i class="layui-icon layui-icon-password"></i> 密码与认证</div>
+                                <div class="security-form">
+                                    <label class="form-label">旧密码</label>
+                                    <input type="password" name="oldPassword" placeholder="请输入当前密码" class="form-input">
+
+                                    <label class="form-label">新密码</label>
+                                    <input type="password" name="newPassword" placeholder="至少 8 位，包含字母与数字"
+                                        class="form-input">
+
+                                    <label class="form-label">确认新密码</label>
+                                    <input type="password" name="confirmPassword" placeholder="请再次输入新密码"
+                                        class="form-input">
+
+                                    <button class="primary-btn" lay-submit lay-filter="passwordForm">更新密码</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-block">
+                                <div class="settings-title"><i class="layui-icon layui-icon-set-sm"></i> 偏好设置</div>
+
+                                <div class="pref-row">
+                                    <div>
+                                        <div class="pref-label">系统邮件通知</div>
+                                        <div class="pref-desc">会议审批结果、取消提醒等重要信息将发送至您的邮箱</div>
+                                    </div>
+                                    <input type="checkbox" name="emailNotify" lay-skin="switch" lay-text="开启|关闭"
+                                        lay-filter="emailNotifySwitch" th:checked="${emailNotify}">
+                                </div>
+
+                                <div class="pref-row">
+                                    <div>
+                                        <div class="pref-label">时区显示</div>
+                                        <div class="pref-desc">日程表将根据您选择的时区进行时间转换</div>
+                                    </div>
+                                    <div style="width: 200px;">
+                                        <select name="timezone" lay-verify="" lay-filter="timezoneSelect">
+                                            <option value="Asia/Shanghai" th:selected="${userTimezone == 'Asia/Shanghai'}">UTC+08:00 北京时间</option>
+                                            <option value="UTC" th:selected="${userTimezone == 'UTC'}">UTC 标准时间</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-block">
+                                <div class="settings-title"><i class="layui-icon layui-icon-auz"></i> 登录设备管理</div>
+                                <table class="layui-table" lay-skin="line">
+                                    <colgroup>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col width="100">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>登录设备 / 系统</th>
+                                            <th>IP 地址</th>
+                                            <th>最近活动时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${#lists.isEmpty(userDevices)}">
+                                            <td colspan="4" style="text-align:center; color:#94a3b8;">暂无登录设备记录</td>
+                                        </tr>
+                                        <tr th:each="device : ${userDevices}">
+                                            <td>
+                                                <i class="layui-icon layui-icon-desktop" th:if="${device.deviceInfo.contains('Windows') || device.deviceInfo.contains('Mac')}" style="margin-right:8px; color:#94a3b8;"></i>
+                                                <i class="layui-icon layui-icon-cellphone" th:if="${!device.deviceInfo.contains('Windows') && !device.deviceInfo.contains('Mac')}" style="margin-right:8px; color:#94a3b8;"></i>
+                                                <span th:text="${device.deviceInfo}">设备信息</span>
+                                            </td>
+                                            <td class="monospace-font" th:text="${device.ipAddress}">IP</td>
+                                            <td class="monospace-font" th:text="${#temporals.format(device.lastActiveTime, 'yyyy-MM-dd HH:mm:ss')}">时间</td>
+                                            <td>
+                                                <span th:if="${iterStat != null && iterStat.index == 0}" style="color:#10b981; font-weight:600; font-size:12px;">当前设备</span>
+                                                <a th:if="${iterStat == null || iterStat.index != 0}" href="javascript:;" style="color:#ef4444; font-weight:600; font-size:13px; cursor:pointer;" th:onclick="'offlineDevice(' + ${device.id} + ')'">下线</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="danger-zone">
+                                <div class="danger-title"><i class="layui-icon layui-icon-tips"></i> 危险操作：申请停用账号</div>
+                                <div class="danger-text">
+                                    此操作将向系统管理员提交账号停用申请，您的企业账号及会议室系统的相关操作权限将被冻结。<br>
+                                    已经生成的会议记录将作为审计日志永久保留，不可撤销。
+                                </div>
+                                <button type="button" class="layui-btn layui-btn-danger layui-btn-sm" id="btnDeactivate"
+                                    style="border-radius: 4px;">申请停用账号</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // 获取 CSRF Token
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+    layui.use(['element', 'form', 'upload', 'layer'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        var upload = layui.upload;
+        var layer = layui.layer;
+
+        // 初始化进度条
+        element.render('progress');
+        // 初始化表单组件
+        form.render();
+
+        // 1. 头像上传互动绑定
+        upload.render({
+            elem: '#uploadAvatar',
+            url: '/api/user/avatar',
+            headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
+            done: function (res) {
+                if (res.code === 200) {
+                    layer.msg('头像上传成功');
+                    $('#uploadAvatar').css('background', 'url(' + res.data + ') no-repeat center/cover').css('color', 'transparent');
+                    $('#uploadAvatar span').hide();
+                } else {
+                    layer.msg(res.message || '头像上传失败', { icon: 2 });
+                }
+            },
+            error: function () {
+                layer.msg('网络或接口错误', { icon: 2 });
+            }
+        });
+
+        // 2. 基本信息编辑按钮绑定弹层
+        $('#editInfoBtn').on('click', function () {
+            layer.prompt({
+                title: '修改真实姓名',
+                value: /*[[${userName}]]*/ ''
+            }, function(value, index){
+                $.ajax({
+                    url: '/api/user/update-info',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                    data: JSON.stringify({ realName: value }),
+                    success: function(res) {
+                        if (res.code === 200) {
+                            layer.msg('修改成功');
+                            $('.user-name').text(value);
+                            layer.close(index);
+                        } else {
+                            layer.msg(res.message || '修改失败');
+                        }
+                    }
+                });
+            });
+        });
+
+        // 3. 密码修改提交拦截
+        form.on('submit(passwordForm)', function (data) {
+            $.ajax({
+                url: '/profile/password',
+                type: 'POST',
+                headers: typeof csrfHeader !== 'undefined' && csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                data: data.field,
+                success: function (res) {
+                    layer.msg(res.message || '密码修改成功，请重新登录', {icon: 1, time: 2000}, function() {
+                        window.location.href = '/logout';
+                    });
+                },
+                error: function (xhr) {
+                    var msg = '网络错误';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    layer.msg(msg, {icon: 2});
+                }
+            });
+            return false;
+        });
+
+        // 4. 偏好设置更新
+        form.on('switch(emailNotifySwitch)', function(data){
+            updatePreference({ emailNotify: data.elem.checked });
+        });
+        
+        form.on('select(timezoneSelect)', function(data){
+            updatePreference({ timezone: data.value });
+        });
+
+        function updatePreference(dataObj) {
+            $.ajax({
+                url: '/api/user/preferences',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                data: JSON.stringify(dataObj),
+                success: function(res) {
+                    if (res.code !== 200) {
+                        layer.msg(res.message || '偏好设置更新失败');
+                    }
+                }
+            });
+        }
+
+        // 5. 账号停用
+        $('#btnDeactivate').on('click', function() {
+            layer.confirm('确定要申请停用您的账号吗？操作不可逆！', {icon: 3, title:'严重警告'}, function(index){
+                $.ajax({
+                    url: '/api/user/deactivate',
+                    type: 'POST',
+                    headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                    success: function(res) {
+                        if (res.code === 200) {
+                            layer.msg('账号已停用，正在退出系统...', {icon: 1, time: 2000}, function() {
+                                window.location.href = '/logout';
+                            });
+                        } else {
+                            layer.msg(res.message);
+                        }
+                    }
+                });
+                layer.close(index);
+            });
+        });
+    });
+
+    // 6. 设备下线
+    function offlineDevice(deviceId) {
+        layer.confirm('确定要下线该设备吗？', function(index){
+            $.ajax({
+                url: '/api/user/device/offline',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: typeof csrfHeader !== 'undefined' && csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                data: JSON.stringify({ deviceId: deviceId }),
+                success: function(res) {
+                    if (res.code === 200) {
+                        layer.msg('设备已下线');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        layer.msg(res.message || '操作失败');
+                    }
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>

@@ -1,0 +1,190 @@
+<!-- 引入 FullCalendar -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/index.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/index.global.min.js"></script>
+
+<style>
+    /* ==================== 极简莫兰迪 Design System ==================== */
+    .detail-wrap { display: flex; gap: 24px; align-items: flex-start; }
+    .detail-left { width: 340px; flex-shrink: 0; }
+    .detail-right { flex: 1; min-width: 0; }
+    
+    .detail-info-card { 
+        background: #ffffff; 
+        border-radius: 12px; 
+        padding: 32px; 
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04); 
+        margin-bottom: 24px; 
+    }
+    
+    /* 顶部信息 Flex 布局 */
+    .detail-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .detail-room-name { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; }
+    
+    .detail-meta { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .detail-meta-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #64748b; }
+    .detail-meta-item i { font-size: 16px; color: #94a3b8; margin-top: 2px; }
+    .detail-meta-item .val { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #0f172a; font-weight: 600; }
+    
+    .facility-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .facility-tag-detail {
+        padding: 6px 12px;
+        background: #f8fafc;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #475569;
+        font-weight: 500;
+    }
+    
+    /* Morandi Tags */
+    .tag { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; }
+    .tag-green { background: #dcfce7; color: #166534; }
+    .tag-red { background: #fef2f2; color: #dc2626; }
+    .tag-gray { background: #f1f5f9; color: #475569; }
+    
+    .book-cta { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .calendar-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .calendar-card h3 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 20px; }
+    #room-calendar { min-height: 500px; }
+    
+    @media (max-width: 900px) {
+        .detail-wrap { flex-direction: column; }
+        .detail-left { width: 100%; }
+    }
+
+    /* ==================== 会议室详情专属暗黑模式覆盖 ==================== */
+    /* 基础面板颜色反转 */
+    html[data-theme="dark"] .detail-info-card,
+    html[data-theme="dark"] .calendar-card { background: var(--card); }
+    html[data-theme="dark"] .detail-room-name,
+    html[data-theme="dark"] .calendar-card h3,
+    html[data-theme="dark"] .detail-meta-item .val { color: var(--text-1); }
+    html[data-theme="dark"] .detail-meta-item,
+    html[data-theme="dark"] .detail-meta-item i { color: var(--text-3); }
+    html[data-theme="dark"] .facility-tag-detail { background: var(--bg); color: var(--text-3); }
+
+    /* 同步修复莫兰迪标签 */
+    html[data-theme="dark"] .tag-green { background: rgba(22, 101, 52, 0.3); color: #4ade80; }
+    html[data-theme="dark"] .tag-red { background: rgba(220, 38, 38, 0.3); color: #f87171; }
+    html[data-theme="dark"] .tag-gray { background: rgba(71, 85, 105, 0.3); color: #94a3b8; }
+
+    /* 📅 FullCalendar 日历插件极限暗黑渗透 */
+    html[data-theme="dark"] .fc { color: var(--text-1); }
+    html[data-theme="dark"] .fc-theme-standard .fc-scrollgrid,
+    html[data-theme="dark"] .fc-theme-standard td,
+    html[data-theme="dark"] .fc-theme-standard th { 
+        border-color: var(--border); 
+    }
+    /* 日历表头颜色 */
+    html[data-theme="dark"] .fc-col-header-cell { background: var(--bg); }
+    html[data-theme="dark"] .fc-timegrid-slot-label { color: var(--text-3); }
+    /* 顶栏控制按钮 */
+    html[data-theme="dark"] .fc-button-primary { 
+        background-color: var(--border) !important; 
+        border-color: var(--border) !important; 
+        color: var(--text-1) !important; 
+    }
+    html[data-theme="dark"] .fc-button-primary:hover { 
+        background-color: var(--text-3) !important; 
+    }
+</style>
+
+<div class="detail-wrap">
+    <!-- 左侧：会议室信息 -->
+    <div class="detail-left">
+        <div class="detail-info-card">
+            <!-- 左右 Flex 布局 -->
+            <div class="detail-header-flex">
+                <div class="detail-room-name" th:text="${roomVO.roomName}">会议室名称</div>
+                <div>
+                    <span class="tag tag-green" th:if="${roomVO.status == 1}">可用</span>
+                    <span class="tag tag-red"   th:if="${roomVO.status == 0}">维修中</span>
+                    <span class="tag tag-gray"  th:if="${roomVO.status == 2}">停用</span>
+                </div>
+            </div>
+
+            <div class="detail-meta">
+                <div class="detail-meta-item">
+                    <i class="layui-icon layui-icon-location"></i>
+                    <div>
+                        <div style="margin-bottom: 4px;">位置</div>
+                        <span class="val" th:text="${roomVO.location}">未知</span>
+                    </div>
+                </div>
+                <div class="detail-meta-item">
+                    <i class="layui-icon layui-icon-group"></i>
+                    <div>
+                        <div style="margin-bottom: 4px;">容量</div>
+                        <span class="val" th:text="${roomVO.capacity} + ' 人'">0 人</span>
+                    </div>
+                </div>
+                <div class="detail-meta-item">
+                    <i class="layui-icon layui-icon-component"></i>
+                    <div>
+                        <div style="margin-bottom: 4px;">设备</div>
+                        <div class="facility-list">
+                            <span class="facility-tag-detail" th:each="f : ${roomVO.facilityList}" th:text="${f}">设备</span>
+                            <span th:if="${#lists.isEmpty(roomVO.facilityList)}" style="font-size:13px; color: #94a3b8;">暂无设备信息</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="book-cta">
+                <a th:href="@{/booking/new(roomId=${roomVO.id})}" class="primary-btn" th:if="${roomVO.status == 1}">
+                    <i class="layui-icon layui-icon-add-1"></i> 立即预约
+                </a>
+                <a th:href="@{/rooms}" class="ghost-btn">
+                    <i class="layui-icon layui-icon-left"></i> 返回列表
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：日程日历 -->
+    <div class="detail-right">
+        <div class="calendar-card">
+            <h3>预约日历</h3>
+            <div id="room-calendar"></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var roomId = /*[[${roomVO.id}]]*/ 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('room-calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            locale: 'zh-cn',
+            height: 600,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            slotMinTime: '08:00:00',
+            slotMaxTime: '22:00:00',
+            allDaySlot: false,
+            nowIndicator: true,
+            events: function(fetchInfo, successCallback, failureCallback) {
+                $.get('/api/room/' + roomId + '/schedule', {
+                    start: fetchInfo.startStr,
+                    end: fetchInfo.endStr
+                }, function(res) {
+                    if (res.code === 200) successCallback(res.data);
+                    else failureCallback(res.message);
+                });
+            },
+            eventClick: function(info) {
+                SystemAlert.info(info.event.title);
+            }
+        });
+        calendar.render();
+    });
+</script>

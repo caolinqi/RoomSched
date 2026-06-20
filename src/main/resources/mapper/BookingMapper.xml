@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.roomsched.mapper.BookingMapper">
+
+    <!--
+        公共列片段：booking_record 主表列 + LEFT JOIN 会议室名称和用户名
+        map-underscore-to-camel-case=true 自动将下划线转驼峰：
+            room_name → roomName，user_name → userName
+    -->
+    <sql id="selectBookingVOColumns">
+        br.id,
+        br.room_id,
+        mr.room_name,
+        br.user_id,
+        su.username  AS user_name,
+        su.real_name AS real_name,
+        br.meeting_title,
+        br.start_time,
+        br.end_time,
+        br.attendee_count,
+        br.remark,
+        br.status,
+        br.approver_id,
+        br.approve_time,
+        br.approve_remark,
+        br.check_in_time,
+        br.create_time
+    </sql>
+
+    <sql id="joinRoomAndUser">
+        FROM booking_record br
+        LEFT JOIN meeting_room mr ON br.room_id  = mr.id
+        LEFT JOIN sys_user     su ON br.user_id  = su.id
+    </sql>
+
+    <!-- ============================================================
+         分页查询待审批预约（PENDING 状态，按提交时间升序）
+         消除 N+1：一次 JOIN 获取会议室名称和用户名
+         ============================================================ -->
+    <select id="selectPendingBookingVOs"
+            resultType="org.example.roomsched.vo.BookingVO">
+        SELECT
+        <include refid="selectBookingVOColumns"/>
+        <include refid="joinRoomAndUser"/>
+        WHERE br.status = 'PENDING'
+        ORDER BY br.create_time ASC
+    </select>
+
+    <!-- ============================================================
+         分页查询全部预约，支持按状态和会议室筛选（按创建时间降序）
+         ============================================================ -->
+    <select id="selectAllBookingVOs"
+            resultType="org.example.roomsched.vo.BookingVO">
+        SELECT
+        <include refid="selectBookingVOColumns"/>
+        <include refid="joinRoomAndUser"/>
+        <where>
+            <if test="status != null and status != ''">
+                AND br.status = #{status}
+            </if>
+            <if test="roomId != null">
+                AND br.room_id = #{roomId}
+            </if>
+        </where>
+        ORDER BY br.create_time DESC
+    </select>
+
+    <!-- ============================================================
+         本月预约次数 TOP5 用户（SQL 聚合，消除内存分组）
+         ============================================================ -->
+    <select id="selectTopUsersByMonth"
+            resultType="java.util.Map">
+        SELECT su.real_name AS username,
+               COUNT(*)     AS count
+        FROM booking_record br
+                 LEFT JOIN sys_user su ON br.user_id = su.id
+        WHERE br.create_time >= #{monthStart}
+        GROUP BY br.user_id, su.real_name
+        ORDER BY count DESC
+        LIMIT 5
+    </select>
+
+    <!-- ============================================================
+         本月预约次数 TOP5 会议室（SQL 聚合）
+         ============================================================ -->
+    <select id="selectTopRoomsByMonth"
+            resultType="java.util.Map">
+        SELECT mr.room_name AS roomName,
+               COUNT(*)     AS count
+        FROM booking_record br
+                 LEFT JOIN meeting_room mr ON br.room_id = mr.id
+        WHERE br.create_time >= #{monthStart}
+        GROUP BY br.room_id, mr.room_name
+        ORDER BY count DESC
+        LIMIT 5
+    </select>
+
+</mapper>

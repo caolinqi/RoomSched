@@ -1,0 +1,17 @@
+USE room_sched;
+
+ALTER TABLE sys_user 
+ADD COLUMN avatar_url VARCHAR(255) DEFAULT NULL COMMENT '头像路径',
+ADD COLUMN email_notify TINYINT(1) DEFAULT 1 COMMENT '邮件通知开关',
+ADD COLUMN timezone VARCHAR(50) DEFAULT 'Asia/Shanghai' COMMENT '用户偏好时区';
+
+CREATE TABLE IF NOT EXISTS sys_user_device (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    device_info VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(50) NOT NULL,
+    session_id VARCHAR(100) DEFAULT NULL,
+    last_active_time DATETIME NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES sys_user(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
