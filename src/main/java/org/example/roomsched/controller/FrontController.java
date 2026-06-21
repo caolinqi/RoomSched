@@ -217,7 +217,14 @@ public class FrontController {
             model.addAttribute("userName", name);
             model.addAttribute("userInitials", name != null && name.length() > 0 ? name.substring(0, 1).toUpperCase() : "U");
             model.addAttribute("userRole", dbUser.getRole().replace("ROLE_", ""));
-            model.addAttribute("userEmail", dbUser.getEmail());
+            
+            // 确保如果 email 为空但 username 是邮箱格式，则渲染 username
+            String displayEmail = dbUser.getEmail();
+            if ((displayEmail == null || displayEmail.trim().isEmpty()) && 
+                dbUser.getUsername() != null && dbUser.getUsername().contains("@")) {
+                displayEmail = dbUser.getUsername();
+            }
+            model.addAttribute("userEmail", displayEmail);
             model.addAttribute("userPhone", dbUser.getPhone());
             model.addAttribute("userDept", "系统用户"); // 暂无部门字段
             

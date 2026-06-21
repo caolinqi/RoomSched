@@ -30,8 +30,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         username = username == null ? null : username.trim();
         realName = realName == null ? null : realName.trim();
         if (username == null || username.isBlank()) {
-            throw new RuntimeException("用户名不能为空");
+            throw new RuntimeException("登录邮箱不能为空");
         }
+        
+        // 邮箱格式验证
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if (!username.matches(emailRegex)) {
+            throw new RuntimeException("请输入有效的邮箱格式作为用户名");
+        }
+        
         if (password == null || password.length() < 6 || password.length() > 72) {
             throw new RuntimeException("密码长度必须在6到72位之间");
         }
@@ -40,15 +47,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         }
         // 检查用户名是否已存在
         if (findByUsername(username) != null) {
-            throw new RuntimeException("用户名已存在：" + username);
+            throw new RuntimeException("该邮箱已被注册：" + username);
         }
 
         SysUser user = new SysUser();
         user.setUsername(username);
+        user.setEmail(username); // 将用户名同步保存为邮箱
         user.setPassword(passwordEncoder.encode(password)); // BCrypt 加密
         user.setRealName(realName);
         user.setRole("USER"); // 默认普通用户
         user.setStatus(1); // 默认启用
+        user.setEmailNotify(1); // 默认开启邮件通知
 
         save(user);
         return user;

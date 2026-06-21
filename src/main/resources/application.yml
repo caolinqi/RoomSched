@@ -40,6 +40,23 @@ spring:
   flyway:
     enabled: false
 
+  # ==================== SMTP 邮件发送配置 ====================
+  # 以下配置为占位符，请您在此填入真实的邮箱信息和 SMTP 授权码
+  mail:
+    host: smtp.qq.com       # 例如：smtp.qq.com (QQ邮箱), smtp.163.com (网易邮箱)
+    port: 465               # SSL 通常为 465
+    username: 3341538119@qq.com
+    password: zwvlxgwxmkpbcjhf
+    default-encoding: UTF-8
+    protocol: smtps
+    properties:
+      mail.smtps.auth: "true"
+      mail.smtps.ssl.enable: "true"
+      mail.smtps.connectiontimeout: "5000"
+      mail.smtps.timeout: "5000"
+      mail.smtps.writetimeout: "5000"
+      mail.debug: "true"
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class RegisterForm {
 
-    @NotBlank(message = "用户名不能为空")
-    @Size(min = 3, max = 30, message = "用户名长度必须在3到30位之间")
-    @Pattern(regexp = "^[A-Za-z0-9_]+$", message = "用户名只能包含字母、数字和下划线")
+    @NotBlank(message = "登录邮箱不能为空")
+    @Size(min = 5, max = 50, message = "邮箱长度必须在5到50位之间")
+    @jakarta.validation.constraints.Email(message = "请输入有效的邮箱格式")
     private String username;
 
     @NotBlank(message = "密码不能为空")

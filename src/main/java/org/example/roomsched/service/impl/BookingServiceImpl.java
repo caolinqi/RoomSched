@@ -12,6 +12,9 @@ import org.example.roomsched.mapper.BookingMapper;
 import org.example.roomsched.mapper.RoomMapper;
 import org.example.roomsched.service.BookingService;
 import org.example.roomsched.service.RoomService;
+import org.example.roomsched.service.MailService;
+import org.example.roomsched.service.UserService;
+import org.example.roomsched.entity.SysUser;
 import org.example.roomsched.annotation.LogAction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,8 @@ public class BookingServiceImpl extends ServiceImpl<BookingMapper, BookingRecord
 
     private final RoomService roomService;
     private final RoomMapper roomMapper;
+    private final MailService mailService;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -191,6 +196,13 @@ public class BookingServiceImpl extends ServiceImpl<BookingMapper, BookingRecord
         record.setApproveRemark(approveRemark);
         updateById(record);
         log.info("管理员 {} 审批通过预约 {}", approverId, bookingId);
+
+        // 异步发送通过邮件
+        SysUser user = userService.getById(record.getUserId());
+        MeetingRoom room = roomService.getById(record.getRoomId());
+        if (user != null && room != null) {
+            mailService.sendReservationSuccessEmail(user, record, room);
+        }
     }
 
     @Override
@@ -210,6 +222,13 @@ public class BookingServiceImpl extends ServiceImpl<BookingMapper, BookingRecord
         record.setApproveRemark(approveRemark);
         updateById(record);
         log.info("管理员 {} 审批拒绝预约 {}", approverId, bookingId);
+
+        // 异步发送驳回邮件
+        SysUser user = userService.getById(record.getUserId());
+        MeetingRoom room = roomService.getById(record.getRoomId());
+        if (user != null && room != null) {
+            mailService.sendReservationRejectEmail(user, record, room);
+        }
     }
 
     @Override

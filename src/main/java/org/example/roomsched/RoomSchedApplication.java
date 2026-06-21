@@ -5,11 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import org.springframework.scheduling.annotation.EnableAsync;
+
 /**
  * 智能会议室预约系统 - 启动类
  */
 @SpringBootApplication
 @EnableScheduling // 启用定时任务（用于超时自动释放预约）
+@EnableAsync      // 启用异步方法调用（用于邮件发送等异步任务）
 @MapperScan("org.example.roomsched.mapper") // 扫描 Mapper 接口
 public class RoomSchedApplication {
 

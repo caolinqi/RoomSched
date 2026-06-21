@@ -382,6 +382,130 @@
                 width: 100%;
             }
         }
+
+        /*!* 复合型输入框样式 *!*/
+        /*.rp-input-group {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    border: 1px solid #cbd5e1;*/
+        /*    border-radius: 12px;*/
+        /*    background: #fff;*/
+        /*    transition: all 0.2s ease;*/
+        /*    overflow: hidden;*/
+        /*}*/
+        /*.rp-input-group:focus-within {*/
+        /*    border-color: #6366f1;*/
+        /*    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);*/
+        /*}*/
+        /*.rp-input-group .rp-input {*/
+        /*    border: none;*/
+        /*    border-radius: 0;*/
+        /*    box-shadow: none;*/
+        /*    background: transparent;*/
+        /*    flex: 1;*/
+        /*    min-width: 0;*/
+        /*}*/
+        /*.rp-input-group .rp-input:focus {*/
+        /*    box-shadow: none;*/
+        /*}*/
+        /*.rp-input-group .rp-select {*/
+        /*    border: none;*/
+        /*    border-left: 1px solid #cbd5e1;*/
+        /*    border-radius: 0;*/
+        /*    width: 140px;*/
+        /*    height: 100%;*/
+        /*    min-height: 48px;*/
+        /*    background: #f8fafc;*/
+        /*    color: #475569;*/
+        /*    padding: 0 12px;*/
+        /*    outline: none;*/
+        /*    font-size: 14px;*/
+        /*    cursor: pointer;*/
+        /*    box-sizing: border-box;*/
+        /*    transition: all 0.2s ease;*/
+        /*}*/
+        /*.rp-input-group .rp-select:focus {*/
+        /*    background: #f1f5f9;*/
+        /*}*/
+        /* 复合型输入框样式优化 - 无边界融合版 */
+        /* =========================================
+    纯正互联网大厂风格 (Ant Design / Arco 规范)
+    ========================================= */
+        .rp-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d9d9d9; /* 大厂标准中性灰边框 */
+            border-radius: 8px; /* 收敛圆角，更显专业商务 */
+            background-color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); /* 大厂标准缓动函数 */
+            overflow: hidden;
+        }
+
+        /* 悬停时的边框反馈 */
+        .rp-input-group:hover {
+            border-color: #4096ff;
+        }
+
+        /* 激活时的经典蓝色光晕 */
+        .rp-input-group:focus-within {
+            border-color: #1677ff; /* 经典大厂主蓝 */
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+            outline: 0;
+        }
+
+        .rp-input-group .rp-input {
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            flex: 1;
+            min-width: 0;
+            color: #1f2329; /* 飞书/大厂常用的深色字体，比纯黑更护眼 */
+        }
+
+        .rp-input-group .rp-input:focus {
+            box-shadow: none;
+        }
+
+        /* --- 大厂核心：清晰的后置功能区 (Addon) --- */
+        .rp-input-group .rp-select {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            border-left: 1px solid #d9d9d9; /* 明确的贯穿分割线 */
+            border-radius: 0;
+            width: 140px;
+            height: 100%;
+            min-height: 48px;
+
+            /* 大厂标志性的后置区域浅灰底色 */
+            background-color: #fafafa;
+
+            /* 替换为极简的尖角 SVG 箭头（大厂常用样式） */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z' fill='%23bfbfbf'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+
+            color: #5c5f66;
+            padding: 0 32px 0 14px;
+            outline: none;
+            font-size: 14px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        /* 下拉框悬停时的轻微交互 */
+        .rp-input-group .rp-select:hover {
+            color: #1677ff;
+            /* 悬停时箭头也变蓝 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z' fill='%231677ff'/%3E%3C/svg%3E");
+        }
+
+        /* 解决其他输入框圆角不一致的问题（可选） */
+        .rp-input-wrap > .rp-input:not(.rp-input-group .rp-input) {
+            border-radius: 8px; /* 建议将单独的密码输入框圆角也改成8px，保持视觉统一 */
+        }
     </style>
 </head>
 
@@ -459,16 +583,25 @@
                     <span>您已成功退出登录。</span>
                 </div>
 
-                <form th:action="@{/login}" method="post" onsubmit="handleRemember()">
+                <form th:action="@{/login}" method="post" onsubmit="return handleRememberAndCombine()">
                     <div class="rp-field">
-                        <label>用户名</label>
-                        <div class="rp-input-wrap">
+                        <label>登录邮箱</label>
+                        <div class="rp-input-wrap rp-input-group">
                             <span class="rp-input-adorn"><svg viewBox="0 0 24 24">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg></span>
-                            <input type="text" id="username" name="username" class="rp-input" placeholder="请输入用户名"
+                            <input type="text" id="email-prefix" class="rp-input" placeholder="请输入邮箱前缀 / admin"
                                 required autofocus>
+                            <select id="email-suffix" class="rp-select">
+                                <option value="@qq.com" selected>@qq.com</option>
+                                <option value="@163.com">@163.com</option>
+                                <option value="@126.com">@126.com</option>
+                                <option value="@gmail.com">@gmail.com</option>
+                                <option value="@foxmail.com">@foxmail.com</option>
+                                <option value="@aliyun.com">@aliyun.com</option>
+                            </select>
+                            <input type="hidden" id="username" name="username">
                         </div>
                     </div>
                     <div class="rp-field">
@@ -522,23 +655,59 @@
         function loadRemembered() {
             var remembered = localStorage.getItem('loginUserEncoded');
             if (remembered) {
-                document.getElementById('username').value = decode(remembered);
+                var fullUsername = decode(remembered);
+                
+                // 拆分逻辑
+                var prefixInput = document.getElementById('email-prefix');
+                var suffixSelect = document.getElementById('email-suffix');
+                
+                if (fullUsername.includes('@')) {
+                    var atIndex = fullUsername.indexOf('@');
+                    var prefix = fullUsername.substring(0, atIndex);
+                    var suffix = fullUsername.substring(atIndex);
+                    
+                    // 如果下拉框有这个后缀，则拆分，否则整体放前缀里
+                    var hasOption = Array.from(suffixSelect.options).some(opt => opt.value === suffix);
+                    if (hasOption) {
+                        prefixInput.value = prefix;
+                        suffixSelect.value = suffix;
+                    } else {
+                        prefixInput.value = fullUsername;
+                        suffixSelect.value = '@qq.com';
+                    }
+                } else {
+                    prefixInput.value = fullUsername;
+                    suffixSelect.value = '@qq.com';
+                }
+                
                 document.getElementById('remember-me').checked = true;
                 document.getElementById('password').focus();
             }
         }
 
-        function handleRemember() {
+        function handleRememberAndCombine() {
+            var prefix = document.getElementById('email-prefix').value.trim();
+            var suffix = document.getElementById('email-suffix').value;
+            var finalUsername = prefix;
+            
+            if (prefix !== 'admin' && !prefix.includes('@')) {
+                finalUsername = prefix + suffix;
+            }
+            
+            document.getElementById('username').value = finalUsername;
+            
             var isRemember = document.getElementById('remember-me').checked;
-            var username = document.getElementById('username').value;
             if (isRemember) {
-                localStorage.setItem('loginUserEncoded', encode(username));
+                localStorage.setItem('loginUserEncoded', encode(finalUsername));
             } else {
                 localStorage.removeItem('loginUserEncoded');
             }
+            return true;
         }
 
-        document.addEventListener('DOMContentLoaded', loadRemembered);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRemembered();
+        });
     </script>
 </body>
 

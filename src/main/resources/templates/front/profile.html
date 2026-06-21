@@ -484,11 +484,11 @@
                 <ul class="info-list" style="width: 100%;">
                     <li class="info-item">
                         <i class="layui-icon layui-icon-email"></i>
-                        <span th:text="${userEmail ?: 'admin@roomsched.com'}">admin@roomsched.com</span>
+                        <span th:text="${userEmail ?: '未绑定'}">未绑定</span>
                     </li>
                     <li class="info-item">
                         <i class="layui-icon layui-icon-cellphone"></i>
-                        <span th:text="${userPhone ?: '138****0000'}">138****0000</span>
+                        <span th:text="${userPhone ?: '未绑定'}">未绑定</span>
                     </li>
                     <li class="info-item">
                         <i class="layui-icon layui-icon-group"></i>
@@ -712,26 +712,68 @@
 
         // 2. 基本信息编辑按钮绑定弹层
         $('#editInfoBtn').on('click', function () {
-            layer.prompt({
-                title: '修改真实姓名',
-                value: /*[[${userName}]]*/ ''
-            }, function(value, index){
-                $.ajax({
-                    url: '/api/user/update-info',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    headers: csrfHeader ? { [csrfHeader]: csrfToken } : {},
-                    data: JSON.stringify({ realName: value }),
-                    success: function(res) {
-                        if (res.code === 200) {
-                            layer.msg('修改成功');
-                            $('.user-name').text(value);
-                            layer.close(index);
-                        } else {
-                            layer.msg(res.message || '修改失败');
-                        }
+            var currentName = /*[[${userName}]]*/ '';
+            var currentEmail = /*[[${userEmail}]]*/ '';
+            var currentPhone = /*[[${userPhone}]]*/ '';
+            
+            var html = '<form class="layui-form" lay-filter="editInfoForm" style="padding: 20px 30px 0 0;">' +
+                       '  <div class="layui-form-item">' +
+                       '    <label class="layui-form-label" style="width: 90px; white-space: nowrap;">真实姓名</label>' +
+                       '    <div class="layui-input-block" style="margin-left: 120px;">' +
+                       '      <input type="text" name="realName" required lay-verify="required" value="'+ (currentName || '') +'" autocomplete="off" class="layui-input">' +
+                       '    </div>' +
+                       '  </div>' +
+                       '  <div class="layui-form-item">' +
+                       '    <label class="layui-form-label" style="width: 90px; white-space: nowrap;">联系邮箱</label>' +
+                       '    <div class="layui-input-block" style="margin-left: 120px;">' +
+                       '      <input type="email" name="email" value="'+ (currentEmail || '') +'" autocomplete="off" class="layui-input">' +
+                       '    </div>' +
+                       '  </div>' +
+                       '  <div class="layui-form-item">' +
+                       '    <label class="layui-form-label" style="width: 90px; white-space: nowrap;">手机号码</label>' +
+                       '    <div class="layui-input-block" style="margin-left: 120px;">' +
+                       '      <input type="text" name="phone" value="'+ (currentPhone || '') +'" autocomplete="off" class="layui-input">' +
+                       '    </div>' +
+                       '  </div>' +
+                       '</form>';
+
+            layer.open({
+                type: 1,
+                title: '修改基本信息',
+                area: ['400px', 'auto'],
+                content: html,
+                btn: ['保存', '取消'],
+                success: function(layero, index){
+                    form.render(null, 'editInfoForm');
+                },
+                yes: function(index, layero) {
+                    var formData = form.val('editInfoForm');
+                    if (!formData.realName) {
+                        layer.msg('真实姓名不能为空', {icon: 2});
+                        return false;
                     }
-                });
+                    $.ajax({
+                        url: '/api/user/update-info',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        headers: typeof csrfHeader !== 'undefined' && csrfHeader ? { [csrfHeader]: csrfToken } : {},
+                        data: JSON.stringify(formData),
+                        success: function(res) {
+                            if (res.code === 200) {
+                                layer.msg('修改成功', {icon: 1});
+                                $('.user-name').text(formData.realName);
+                                $('.layui-icon-email').next('span').text(formData.email || '未设置');
+                                $('.layui-icon-cellphone').next('span').text(formData.phone || '未设置');
+                                layer.close(index);
+                            } else {
+                                layer.msg(res.message || '修改失败', {icon: 2});
+                            }
+                        },
+                        error: function() {
+                            layer.msg('网络错误', {icon: 2});
+                        }
+                    });
+                }
             });
         });
 

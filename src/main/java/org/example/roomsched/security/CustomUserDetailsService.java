@@ -28,6 +28,14 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 对于非 admin 账号，强制必须使用邮箱格式登录
+        if (!"admin".equals(username)) {
+            String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+            if (!username.matches(emailRegex)) {
+                throw new UsernameNotFoundException("非 admin 账号必须使用注册邮箱登录");
+            }
+        }
+
         // 根据用户名查询用户
         SysUser user = userMapper.selectOne(
                 new LambdaQueryWrapper<SysUser>()

@@ -136,10 +136,14 @@ public class UserProfileController {
                 user.setPhone(params.get("phone").toString());
                 userDetails.getUser().setPhone(user.getPhone());
             }
+            if (params.containsKey("email")) {
+                user.setEmail(params.get("email").toString());
+                userDetails.getUser().setEmail(user.getEmail());
+            }
             userService.updateById(user);
             return Result.ok(null);
         } catch (Exception e) {
-            return Result.error("修改失败：" + e.getMessage());
+            return Result.error(500, "更新基础信息失败: " + e.getMessage());
         }
     }
 

@@ -307,6 +307,129 @@
             text-decoration: underline;
         }
 
+        /* 复合型输入框样式 */
+        /*.rp-input-group {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    border: 1px solid #cbd5e1;*/
+        /*    border-radius: 12px;*/
+        /*    background: #fff;*/
+        /*    transition: all 0.2s ease;*/
+        /*    overflow: hidden;*/
+        /*}*/
+        /*.rp-input-group:focus-within {*/
+        /*    border-color: #6366f1;*/
+        /*    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);*/
+        /*}*/
+        /*.rp-input-group .rp-input {*/
+        /*    border: none;*/
+        /*    border-radius: 0;*/
+        /*    box-shadow: none;*/
+        /*    background: transparent;*/
+        /*    flex: 1;*/
+        /*    min-width: 0;*/
+        /*}*/
+        /*.rp-input-group .rp-input:focus {*/
+        /*    box-shadow: none;*/
+        /*}*/
+        /*.rp-input-group .rp-select {*/
+        /*    border: none;*/
+        /*    border-left: 1px solid #cbd5e1;*/
+        /*    border-radius: 0;*/
+        /*    width: 140px;*/
+        /*    height: 100%;*/
+        /*    min-height: 48px;*/
+        /*    background: #f8fafc;*/
+        /*    color: #475569;*/
+        /*    padding: 0 12px;*/
+        /*    outline: none;*/
+        /*    font-size: 14px;*/
+        /*    cursor: pointer;*/
+        /*    box-sizing: border-box;*/
+        /*    transition: all 0.2s ease;*/
+        /*}*/
+        /*.rp-input-group .rp-select:focus {*/
+        /*    background: #f1f5f9;*/
+        /*}*/
+        /* =========================================
+           纯正互联网大厂风格 (Ant Design / Arco 规范)
+           ========================================= */
+        .rp-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d9d9d9; /* 大厂标准中性灰边框 */
+            border-radius: 8px; /* 收敛圆角，更显专业商务 */
+            background-color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); /* 大厂标准缓动函数 */
+            overflow: hidden;
+        }
+
+        /* 悬停时的边框反馈 */
+        .rp-input-group:hover {
+            border-color: #4096ff;
+        }
+
+        /* 激活时的经典蓝色光晕 */
+        .rp-input-group:focus-within {
+            /*border-color: #1677ff; !* 经典大厂主蓝 *!*/
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+            outline: 0;
+        }
+
+        .rp-input-group .rp-input {
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            flex: 1;
+            min-width: 0;
+            color: #1f2329; /* 飞书/大厂常用的深色字体，比纯黑更护眼 */
+        }
+
+        .rp-input-group .rp-input:focus {
+            box-shadow: none;
+        }
+
+        /* --- 大厂核心：清晰的后置功能区 (Addon) --- */
+        .rp-input-group .rp-select {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            border-left: 1px solid #d9d9d9; /* 明确的贯穿分割线 */
+            border-radius: 0;
+            width: 140px;
+            height: 100%;
+            min-height: 48px;
+
+            /* 大厂标志性的后置区域浅灰底色 */
+            background-color: #fafafa;
+
+            /* 替换为极简的尖角 SVG 箭头（大厂常用样式） */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z' fill='%23bfbfbf'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+
+            color: #5c5f66;
+            padding: 0 32px 0 14px;
+            outline: none;
+            font-size: 14px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        /* 下拉框悬停时的轻微交互 */
+        .rp-input-group .rp-select:hover {
+            color: #1677ff;
+            /* 悬停时箭头也变蓝 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z' fill='%231677ff'/%3E%3C/svg%3E");
+        }
+
+        /* 解决其他输入框圆角不一致的问题（可选） */
+        .rp-input-wrap > .rp-input:not(.rp-input-group .rp-input) {
+            border-radius: 8px; /* 建议将单独的密码输入框圆角也改成8px，保持视觉统一 */
+        }
         @media (max-width: 900px) {
             .rp-cover {
                 display: none;
@@ -383,19 +506,28 @@
                     <span th:text="${error}">注册失败</span>
                 </div>
 
-                <form th:action="@{/register}" method="post">
+                <form th:action="@{/register}" method="post" onsubmit="return combineEmail()">
                     <!-- 用户名（使用 layui-icon-username） -->
                     <div class="rp-field">
-                        <label>用户名</label>
-                        <div class="rp-input-wrap">
+                        <label>登录邮箱</label>
+                        <div class="rp-input-wrap rp-input-group">
                             <span class="rp-input-icon"><svg
                                     style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"
                                     viewBox="0 0 24 24">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                    <polyline points="22,6 12,13 2,6" />
                                 </svg></span>
-                            <input type="text" name="username" class="rp-input" placeholder="设定登录用用户名"
+                            <input type="text" id="email-prefix" class="rp-input" placeholder="请输入您的邮箱前缀"
                                 th:value="${registerForm?.username}" required autofocus>
+                            <select id="email-suffix" class="rp-select">
+                                <option value="@qq.com" selected>@qq.com</option>
+                                <option value="@163.com">@163.com</option>
+                                <option value="@126.com">@126.com</option>
+                                <option value="@gmail.com">@gmail.com</option>
+                                <option value="@foxmail.com">@foxmail.com</option>
+                                <option value="@aliyun.com">@aliyun.com</option>
+                            </select>
+                            <input type="hidden" id="username" name="username">
                         </div>
                     </div>
 
@@ -459,6 +591,41 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        function combineEmail() {
+            var prefix = document.getElementById('email-prefix').value.trim();
+            var suffix = document.getElementById('email-suffix').value;
+            var finalUsername = prefix;
+            
+            if (!prefix.includes('@')) {
+                finalUsername = prefix + suffix;
+            }
+            
+            document.getElementById('username').value = finalUsername;
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 回显逻辑：如果注册失败返回，保留之前输入的值
+            var hiddenInput = document.getElementById('username');
+            var prefixInput = document.getElementById('email-prefix');
+            var suffixSelect = document.getElementById('email-suffix');
+            
+            var fullUsername = prefixInput.value; // 由于 Thymeleaf 渲染在 prefix 里
+            if (fullUsername && fullUsername.includes('@')) {
+                var atIndex = fullUsername.indexOf('@');
+                var prefix = fullUsername.substring(0, atIndex);
+                var suffix = fullUsername.substring(atIndex);
+                
+                var hasOption = Array.from(suffixSelect.options).some(opt => opt.value === suffix);
+                if (hasOption) {
+                    prefixInput.value = prefix;
+                    suffixSelect.value = suffix;
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
