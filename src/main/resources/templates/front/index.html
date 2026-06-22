@@ -237,6 +237,67 @@
     html[data-theme="dark"] .tag-red { background: rgba(220, 38, 38, 0.3); color: #f87171; }
     html[data-theme="dark"] .tag-yellow { background: rgba(133, 77, 14, 0.3); color: #facc15; }
     html[data-theme="dark"] .tag-gray { background: rgba(71, 85, 105, 0.3); color: #94a3b8; }
+
+    /* ==================== AI Input Styles ==================== */
+    .ai-booking-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        margin-bottom: 32px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        border: 1px solid #e2e8f0;
+    }
+    html[data-theme="dark"] .ai-booking-card {
+        border-color: #334155;
+    }
+    .ai-booking-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+    .ai-booking-input-wrapper {
+        flex: 1;
+        position: relative;
+    }
+    .ai-booking-input {
+        width: 100%;
+        height: 48px;
+        border: none;
+        background: var(--bg);
+        border-radius: 8px;
+        padding: 0 20px;
+        font-size: 15px;
+        color: var(--text-primary);
+        outline: none;
+        transition: all 0.2s;
+    }
+    .ai-booking-input:focus {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+    .ai-booking-btn {
+        height: 48px;
+        padding: 0 24px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--card);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.1s;
+    }
+    .ai-booking-btn:active {
+        transform: scale(0.96);
+    }
 </style>
 
 <!-- Hero 区域 -->
@@ -256,6 +317,17 @@
             我的预约
         </a>
     </div>
+</div>
+
+<!-- AI 智能预定 -->
+<div class="ai-booking-card">
+    <div class="ai-booking-icon">
+        <i class="layui-icon layui-icon-release"></i>
+    </div>
+    <div class="ai-booking-input-wrapper">
+        <input type="text" id="aiInput" class="ai-booking-input" placeholder="输入您的需求，让 AI 帮您预定... (例如：明天下午两点定个10人的会议室)">
+    </div>
+    <button type="button" class="ai-booking-btn" id="aiBtn">一句话预定</button>
 </div>
 
 <!-- 纯白微投影化统计卡片 -->
@@ -350,4 +422,111 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
+
+document.addEventListener('DOMContentLoaded', function() {
+    var aiBtn = document.getElementById('aiBtn');
+    var aiInput = document.getElementById('aiInput');
+    
+    if (aiBtn && aiInput) {
+        aiBtn.addEventListener('click', function() {
+            var text = aiInput.value.trim();
+            if (!text) {
+                layer.msg('请输入您的需求');
+                return;
+            }
+            
+            var index = layer.load(2, {shade: 0.1});
+            aiBtn.disabled = true;
+            aiBtn.textContent = 'AI 思考中...';
+            
+            var csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            var csrfTokenValue = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            
+            var headers = {
+                'Content-Type': 'application/json'
+            };
+            headers[csrfHeaderName] = csrfTokenValue;
+            
+            fetch('/api/ai/parse', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({text: text})
+            }).then(response => response.json()).then(data => {
+                layer.close(index);
+                aiBtn.disabled = false;
+                aiBtn.textContent = '一句话预定';
+                
+                if (data.message && data.message.includes('失败')) {
+                    layer.alert(data.message, {icon: 2});
+                    return;
+                }
+                
+                if (!data.recommendedRoom) {
+                    layer.alert(data.message || '抱歉，没有找到符合您要求的空闲会议室。', {icon: 0});
+                    return;
+                }
+                
+                var room = data.recommendedRoom;
+                var html = `
+                    <div style="padding: 20px; line-height: 1.8;">
+                        <h3 style="margin-bottom: 15px; color: #3b82f6;"><i class="layui-icon layui-icon-auz"></i> 智能匹配成功</h3>
+                        <p><strong>推荐会议室：</strong>${room.roomName} (容量: ${room.capacity}人)</p>
+                        <p><strong>会议主题：</strong>${data.meetingTitle || '未命名会议'}</p>
+                        <p><strong>开始时间：</strong>${data.startTime.replace('T', ' ')}</p>
+                        <p><strong>结束时间：</strong>${data.endTime.replace('T', ' ')}</p>
+                        <p><strong>建议人数：</strong>${data.attendeeCount} 人</p>
+                    </div>
+                `;
+                
+                layer.confirm(html, {
+                    title: '请确认 AI 预定信息',
+                    area: ['400px', 'auto'],
+                    btn: ['确认预定', '取消']
+                }, function(cIndex) {
+                    layer.close(cIndex);
+                    
+                    var form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/booking';
+                    
+                    var csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_csrf';
+                    csrfInput.value = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                    form.appendChild(csrfInput);
+                    
+                    var inputs = {
+                        roomId: room.id,
+                        meetingTitle: data.meetingTitle || '未命名会议',
+                        startTime: data.startTime.substring(0, 16).replace('T', ' '),
+                        endTime: data.endTime.substring(0, 16).replace('T', ' '),
+                        attendeeCount: data.attendeeCount
+                    };
+                    
+                    for (var key in inputs) {
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = inputs[key];
+                        form.appendChild(input);
+                    }
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            }).catch(err => {
+                layer.close(index);
+                aiBtn.disabled = false;
+                aiBtn.textContent = '一句话预定';
+                layer.alert('请求异常，请检查网络或配置', {icon: 2});
+            });
+        });
+        
+        aiInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                aiBtn.click();
+            }
+        });
+    }
+});
 </script>

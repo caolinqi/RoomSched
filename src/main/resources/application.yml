@@ -50,12 +50,14 @@ spring:
     default-encoding: UTF-8
     protocol: smtps
     properties:
-      mail.smtps.auth: "true"
-      mail.smtps.ssl.enable: "true"
-      mail.smtps.connectiontimeout: "5000"
-      mail.smtps.timeout: "5000"
-      mail.smtps.writetimeout: "5000"
-      mail.debug: "true"
+      mail.smtp.auth: "true"
+      mail.smtp.ssl.enable: "true"
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+      mail.smtps.connectiontimeout: 5000
+      mail.smtps.timeout: 5000
+      mail.smtps.writetimeout: 5000
 
 mybatis-plus:
   configuration:
@@ -73,3 +75,11 @@ logging:
     org.springframework.security: warn
     # 生产环境关闭 SQL 日志，开发环境在 application-dev.yml 中开启
     com.baomidou.mybatisplus: warn
+
+# ===============================
+# 智能 AI 助手配置 (OpenAI 兼容接口)
+# ===============================
+ai:
+  base-url: "https://ark.cn-beijing.volces.com/api/v3"
+  api-key: "ark-b5a7fb41-6a52-4c81-a505-44c2bd1dc9ee-c731c"
+  model: "doubao-seed-2-0-pro-260215"
