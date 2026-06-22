@@ -45,8 +45,8 @@ spring:
   mail:
     host: smtp.qq.com       # 例如：smtp.qq.com (QQ邮箱), smtp.163.com (网易邮箱)
     port: 465               # SSL 通常为 465
-    username: 3341538119@qq.com
-    password: zwvlxgwxmkpbcjhf
+    username: #填写你的邮箱地址，例如：xxxxxxxx@qq.com
+    password: #填写你的邮箱授权码，例如：xxxxxxxx
     default-encoding: UTF-8
     protocol: smtps
     properties:
@@ -80,6 +80,6 @@ logging:
 # 智能 AI 助手配置 (OpenAI 兼容接口)
 # ===============================
 ai:
-  base-url: "https://ark.cn-beijing.volces.com/api/v3"
-  api-key: "ark-b5a7fb41-6a52-4c81-a505-44c2bd1dc9ee-c731c"
-  model: "doubao-seed-2-0-pro-260215"
+  base-url: "https://api.openai.com/v1"  # OpenAI API 基础 URL
+  api-key: ""  # 请通过环境变量 AI_API_KEY 注入，不要在此处硬编码
+  model: "gpt-3.5-turbo"
